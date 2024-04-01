@@ -1,0 +1,66 @@
+function Copy-FileToFolder {
+    param (
+        [string]$sourceFile,
+        [string]$destinationFolder
+    )
+    
+    try {
+        # Check if source file exists
+        if (-not (Test-Path $sourceFile)) {
+            throw "Source file '$sourceFile' does not exist."
+        }
+        
+        # Check if destination folder exists, if not create it
+        if (-not (Test-Path $destinationFolder -PathType Container)) {
+            New-Item -Path $destinationFolder -ItemType Directory -Force
+        }
+        # Generate timestamp
+        $timestamp = Get-Date -Format "yyyyMMddHHmmss"
+
+        # Extract filename and extension
+        $filename = [System.IO.Path]::GetFileNameWithoutExtension($sourceFile)
+        $extension = [System.IO.Path]::GetExtension($sourceFile)
+
+        
+        
+        # Construct destination file path with timestamp
+         #$destinationFolderPath = Join-Path -Path $DestinationParentPath -ChildPath ("destination_folder_$timestamp")
+        $destinationFile = Join-Path -Path $destinationFolder -ChildPath "$filename-$timestamp$extension"
+
+    
+        # Copy file to destination folder
+        #$destinationFile = Join-Path -Path $destinationFolder -ChildPath (Split-Path $sourceFile -Leaf)
+        Copy-Item -Path $sourceFile -Destination $destinationFile -Force
+        
+        Write-Host "File '$sourceFile' copied successfully to '$destinationFolder'."
+                  
+    }   
+    catch {
+        Write-Host "Error: $_"
+    }
+}
+
+# Function to perform the file copy operations
+function Perform-FileCopyOperations {
+    param (
+        [string]$jarSourceFile,
+        [string]$warSourceFile,
+        [string]$demoDestination,
+        [string]$warDestination
+    )
+    
+    # Copy .jar file from C:/example to D:/webpay
+    Copy-FileToFolder -sourceFile $jarSourceFile -destinationFolder $demoDestination
+
+    # Copy .war file from D:/webpay to C:/example
+    Copy-FileToFolder -sourceFile $warSourceFile -destinationFolder $warDestination
+}
+
+# Source and destination paths
+$jarSourceFile = "C:\example\maven-wrapper.jar"
+$warSourceFile = "C:\example\pom.xml"
+$demoDestination = "D:\webpay\"
+$warDestination = "D:\webpay\"
+
+# Call function to perform file copy operations
+Perform-FileCopyOperations -jarSourceFile $jarSourceFile -warSourceFile $warSourceFile -demoDestination $demoDestination -warDestination $warDestination
