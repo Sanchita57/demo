@@ -58,3 +58,13 @@ $destinationFolder = "C:\example"
 
 # Call the function to backup XML and JAR files without timestamp and create a folder with timestamp
 Backup-XMLAndJARFiles -SourceFolder $sourceFolder -DestinationFolder $destinationFolder
+
+
+<#
+$limit = (Get-Date).AddDays(-15)
+            $path = "C:\Program Files\Apache Software Foundation\Tomcat 9.0.75_DP\webapps\Backup"
+            # Delete files older than the $limit
+            Get-ChildItem -Path $path -Recurse -Force | Where-Object { !$_.PSIsContainer -and $_.CreationTime -lt $limit } | Remove-Item -Force
+            # Delete any empty directories left behind after deleting the old files.
+            Get-ChildItem -Path $path -Recurse -Force | Where-Object { $_.PSIsContainer -and (Get-ChildItem -Path $_.FullName -Recurse -Force | Where-Object { !$_.PSIsContainer }) -eq $null } | Remove-Item -Force -Recurse
+  #>
