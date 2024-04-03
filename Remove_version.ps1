@@ -1,4 +1,4 @@
-﻿# Specify the folder containing the files
+# Specify the folder containing the files
 $folderPath = "D:\webpay\maven"
 
 # Get all files in the folder
@@ -20,4 +20,7 @@ foreach ($file in $files) {
     
     # Rename the file
     Rename-Item -Path $file.FullName -NewName $newFileName -Force
+
+    # Print the output
+    Write-Host "File name changed from $($file.Name) to $newFileName"
 }
