@@ -134,3 +134,17 @@ $destinationFolder = "C:\example"
 Backup-XMLAndJARFiles -SourceFolder $sourceFolder -DestinationFolder $destinationFolder
 
 #>
+
+<#
+
+$sourceFolder = "F:\Payment"
+    $TargetFolder = "F:\Bitbucket\Program Files\Tomcat 9.0.75_PG\webapps"
+    Remove-Item "$targetFolder\*.war" -Force
+    Rename-Item -Path "$sourceFolder\DetokenisationService-*.war" -newName "$sourceFolder\DetokenisationService.war"
+    Rename-Item -Path "$sourceFolder\EchoTestService-*.war" -newName "$sourceFolder\EchoTestService.war"
+    Rename-Item -Path "$sourceFolder\TokenisationService-*.war" -newName "$sourceFolder\TokenisationService.war"
+    Rename-Item -Path "$sourceFolder\WebServiceAPI-*.war" -newName "$sourceFolder\WebServiceAPI.war"
+    Copy-Item "$sourceFolder\*Service.war" -Destination $targetFolder -Force
+    Copy-Item "$sourceFolder\WebServiceAPI.war" -Destination $targetFolder -Force
+
+    #>
