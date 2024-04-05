@@ -1,0 +1,38 @@
+Username=<+stage.variables.UserName>
+Password=<+stage.variables.Password>
+fileUrls=(
+    #"https://artifactory.fis.dev/ui/native/webpay-maven-release-local/com/fis/container/container-ws-war",
+	"https://artifactory.fis.dev/artifactory/webpay-maven-release-local/com/fis/container/container-ws-war/5.3.3-3/container-ws-war-5.3.3-3.war"
+	#"https://artifactory.fis.dev/artifactory/webpay-maven-release-local/com/fis/container/container-ws-war/5.3.3-3/container-ws-war-5.3.3-3-spring-boot.war"
+
+	#"https://artifactory.fis.dev/ui/native/webpay-maven-release-local/com/fis/container/tokenisation",
+	"https://artifactory.fis.dev/artifactory/webpay-maven-release-local/com/fis/container/tokenisation/3.2.3-2/tokenisation-3.2.3-2.war"
+
+	#"https://artifactory.fis.dev/ui/native/webpay-maven-release-local/com/fis/container/data-vault",
+	"https://artifactory.fis.dev/artifactory/webpay-maven-release-local/com/fis/container/data-vault/5.2.1-1/data-vault-5.2.1-1.war"
+
+	#"https://artifactory.fis.dev/ui/native/webpay-maven-release-local/com/fis/container/key-registry-ws", NA
+
+	#"https://artifactory.fis.dev/ui/native/webpay-maven-release-local/com/fis/container/binservice",
+	"https://artifactory.fis.dev/artifactory/webpay-maven-release-local/com/fis/container/binservice/5.2.0-3/binservice-5.2.0-3.war"
+
+	#"https://artifactory.fis.dev/ui/native/webpay-maven-release-local/com/fis/container/notification",
+	"https://artifactory.fis.dev/artifactory/webpay-maven-release-local/com/fis/container/notification/2.2.1-1/"
+
+	#"https://artifactory.fis.dev/ui/native/webpay-maven-release-local/com/fis/container/adminservices", 
+	https://artifactory.fis.dev/artifactory/webpay-maven-release-local/com/fis/container/adminservices/3.2.1-1/adminservices-3.2.1-1.war
+
+    #"https://artifactory.fis.dev/ui/native/webpay-maven-release-local/com/fis/container/authservice-application",
+	"https://artifactory.fis.dev/artifactory/webpay-maven-release-local/com/fis/container/authservice-application/3.2.0-3/authservice-application-3.2.0-3.war",
+
+	#"https://artifactory.fis.dev/ui/native/webpay-maven-release-local/com/fis/container/till-api-gateway",
+	"https://artifactory.fis.dev/artifactory/webpay-maven-release-local/com/fis/container/till-api-gateway/1.2.0-2/till-api-gateway-1.2.0-2-spring-boot.jar"
+	"https://artifactory.fis.dev/artifactory/webpay-maven-release-local/com/fis/container/till-api-gateway/1.2.0-2/till-api-gateway-1.2.0-2.jar"
+
+	#"https://artifactory.fis.dev/ui/native/webpay-maven-release-local/com/fis/container/admin-console",
+	"https://artifactory.fis.dev/artifactory/webpay-maven-release-local/com/fis/container/admin-console/2.1.0-1/admin-console-2.1.0-1.zip"
+	
+)
+
+for url in "${fileUrls[@]}"; do
+    curl -u "$Username:$Password" -O "$url"
