@@ -1,7 +1,11 @@
 exp: ^com\/fis\/container\/(container-ws-war|tokenisation|key-registry-ws|notification)\/.*$
 
 equals(artifact.filePath, 'com/fis/container/${folderName}/${artifactId}-${artifactVersion}-${artifactBuildNumber}')
+
 artifact.filePath.startsWith('com/fis/container/') && artifact.filePath.endsWith(artifact.buildNumber)
+
+jfrog.repository.name == 'webpay-maven-release-local' && (jfrog.repository.path =~ /com\/fis\/container\/container-ws-war\/\d+\.\d+\.\d+(-\d+)?/ || jfrog.repository.path =~ /com\/fis\/container\/tokenisation\/\d+\.\d+\.\d+(-\d+)?/ || jfrog.repository.path =~ /com\/fis\/container\/key-registry-ws/ || jfrog.repository.path =~ /com\/fis\/container\/notification\/\d+\.\d+\.\d+(-\d+)?/)
+
 
 ===========================
 
