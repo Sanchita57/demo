@@ -1,3 +1,7 @@
+exp: ^com\/fis\/container\/(container-ws-war|tokenisation|key-registry-ws|notification)\/.*$
+
+
+
 Username=<+stage.variables.UserName>
 Password=<+stage.variables.Password>
 fileUrls=(
