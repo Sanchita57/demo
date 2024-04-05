@@ -1,6 +1,6 @@
 exp: ^com\/fis\/container\/(container-ws-war|tokenisation|key-registry-ws|notification)\/.*$
 
-
+equals(artifact.filePath, 'com/fis/container/${folderName}/${artifactId}-${artifactVersion}-${artifactBuildNumber}')
 
 Username=<+stage.variables.UserName>
 Password=<+stage.variables.Password>
