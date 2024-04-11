@@ -1,66 +1,59 @@
-function Backup-XMLAndJARFiles {
+function Rollback-Backup {
     param (
-        [string]$SourceFolder,
-        [string]$DestinationFolder
+        [string]$BackupFolder,
+        [string]$SourceFolder
     )
 
     try {
-        # Get XML files in the source folder
-        $xmlFiles = Get-ChildItem -Path $SourceFolder -Filter "*.xml" -File
+        $latestBackupFolder = Get-ChildItem -Path $BackupFolder | Sort-Object LastWriteTime -Descending | Select-Object -First 1
 
-        # Get JAR files in the source folder
-        $jarFiles = Get-ChildItem -Path $SourceFolder -Filter "*.jar" -File
-
-        # Check if XML files exist
-        if ($xmlFiles.Count -eq 0) {
-            Write-Host "xml files do not exist in the source folder: $SourceFolder"
-        }
-
-        # Check if JAR files exist
-        if ($jarFiles.Count -eq 0) {
-            Write-Host "JAR files do not exist in the source folder: $SourceFolder"
-        }
-
-        # Combine XML and JAR files into a single array
-        $filesToBackup = @($xmlFiles) + @($jarFiles)
-
-        # Check if there are files to backup
-        if ($filesToBackup.Count -eq 0) {
-            Write-Host "No XML or JAR files to backup in the source folder: $SourceFolder"
+        if (-not $latestBackupFolder) {
+            Write-Host "No backup folders found in: $BackupFolder"
             return
         }
 
-        # Get current timestamp
-        $timestamp = Get-Date -Format "yyyy-MM-dd_HH-mm-ss"
+        # Get the list of files in the latest backup folder
+        $backupFiles = Get-ChildItem -Path $latestBackupFolder.FullName
 
-        # Define folder name with timestamp and "emvco"
-        $folderName = "emvco_$timestamp"
-
-        # Create folder with timestamp inside the destination folder
-        $timestampedFolder = Join-Path -Path $DestinationFolder -ChildPath $folderName
-        New-Item -Path $timestampedFolder -ItemType Directory -Force
-
-        # Loop through each file and copy it to the destination folder without timestamp
-        foreach ($file in $filesToBackup) {
-            $destinationFilePath = Join-Path -Path $timestampedFolder -ChildPath $file.Name
-            Copy-Item -Path $file.FullName -Destination $destinationFilePath -Force
-            Write-Host "Backed up $($file.FullName) to $($destinationFilePath)"
-
-            # Delete the XML and JAR file from the source folder
-            Remove-Item -Path $file.FullName -Force
-            Write-Host "Deleted $($file.FullName)"
+        
+        # Check if there are files to restore
+        if ($backupFiles.Count -eq 0) {
+            Write-Host "No files found in the backup folder: $($latestBackupFolder.FullName)"
+            return
         }
 
-        Write-Host "All files backed up to folder $($timestampedFolder)"
+        Write-Host "Files inside the $latestBackupFolder are:"
+        foreach ($file in $backupFiles) {
+            Write-Host "- $($file.Name)"
+        }
+
+        Write-Host ""
+        Start-Sleep -Seconds 3
+
+
+        # Loop through each file in the backup folder and restore it to the source folder
+        foreach ($file in $backupFiles) {
+            $destinationFilePath = Join-Path -Path $SourceFolder -ChildPath $file.Name
+            Copy-Item -Path $file.FullName -Destination $destinationFilePath -Force
+            Write-Host "Restored $($file.FullName) to $($destinationFilePath)"
+            Remove-Item -Path $file.FullName -Force
+            Write-Host "Deleted $($file.FullName)"
+            Write-Host ""
+        }
+        Remove-Item -Path $latestBackupFolder.FullName -Force
+        Write-Host "Removed backup folder: $($latestBackupFolder.FullName)"
+        Write-Host ""
+
+        Write-Host "Rollback completed successfully."
     }
     catch {
         Write-Host "An error occurred: $_"
     }
 }
 
-# Define source and destination folder paths
-$sourceFolder = "C:\example\Backup"
-$destinationFolder = "C:\example"
+# Define backup and source folder paths
+$BackupFolder = "C:\example\Backup"
+$SourceFolder = "C:\example"
 
-# Call the function to backup XML and JAR files without timestamp and create a folder with timestamp
-Backup-XMLAndJARFiles -SourceFolder $sourceFolder -DestinationFolder $destinationFolder
+# Call the function to rollback the backup
+Rollback-Backup -BackupFolder $BackupFolder -SourceFolder $SourceFolder
