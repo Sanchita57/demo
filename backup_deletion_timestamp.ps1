@@ -1,4 +1,5 @@
-﻿function Backup-XMLAndJARFiles {
+#backup script
+function Backup-XMLAndJARFiles {
     param (
         [string]$SourceFolder,
         [string]$DestinationFolder
