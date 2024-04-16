@@ -79,4 +79,3 @@ $destinationFolders = @("C:\example1\Backup1", "C:\example2\Backup2")
 
 # Call the function to backup XML and JAR files without timestamp and create a folder with timestamp
 Backup-XMLAndJARFiles -SourceFolders $sourceFolders -DestinationFolders $destinationFolders
--
