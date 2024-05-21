@@ -1,0 +1,21 @@
+pipeline {
+    agent any
+
+    environment {
+        VAULT_ADDR = 'https://your-vault-address:8200'
+    }
+
+    stages {
+        stage('Retrieve Vault Secret') {
+            steps {
+                // Use Vault Plugin to read secret
+                withCredentials([[$class: 'VaultSecret', path: 'secret/data/my-secret-path', secretValues: [[$class: 'VaultSecretValue', envVar: 'VAULT_PASSWORD', vaultKey: 'password']]]]) {
+                    script {
+                        // Use the retrieved secret
+                        echo "Successfully retrieved Vault password: ${env.VAULT_PASSWORD}"
+                    }
+                }
+            }
+        }
+    }
+}
