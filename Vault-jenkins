@@ -1,18 +1,21 @@
 pipeline {
     agent any
-
+    
     environment {
-        VAULT_ADDR = 'https://your-vault-address:8200'
+        VAULT_ADDR = 'https://your-vault-server:8200'  // Replace with your Vault server address
+        VAULT_CREDENTIALS_ID = 'your-vault-credentials-id'  // Jenkins credentials ID for Vault token
     }
 
     stages {
-        stage('Retrieve Vault Secret') {
+        stage('Fetch Secret from Vault') {
             steps {
-                // Use Vault Plugin to read secret
-                withCredentials([[$class: 'VaultSecret', path: 'secret/data/my-secret-path', secretValues: [[$class: 'VaultSecretValue', envVar: 'VAULT_PASSWORD', vaultKey: 'password']]]]) {
-                    script {
-                        // Use the retrieved secret
-                        echo "Successfully retrieved Vault password: ${env.VAULT_PASSWORD}"
+                script {
+                    // Fetch secret from Vault
+                    withVault([vaultUrl: env.VAULT_ADDR, credentialsId: env.VAULT_CREDENTIALS_ID]) {
+                        def secret = vault path: 'dev/jenkins', secretValues: [
+                            [envVar: 'DUMMY_SECRET', vaultKey: 'vault_test']
+                        ]
+                        echo "Fetched secret: ${env.DUMMY_SECRET}"
                     }
                 }
             }
