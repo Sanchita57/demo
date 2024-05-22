@@ -45,3 +45,33 @@ pipeline {
         }
     }
 }
+
+
+
+&&&&&&&&&&&&
+refiened version 
+
+
+
+
+pipeline {
+    agent any
+
+    environment {
+        VAULT_SECRET_CREDENTIALS_ID = 'vault-test-secret'  // Jenkins credentials ID for the secret
+    }
+
+    stages {
+        stage('Fetch and Use Secret') {
+            steps {
+                script {
+                    // Fetch secret from Jenkins credentials
+                    withCredentials([string(credentialsId: env.VAULT_SECRET_CREDENTIALS_ID, variable: 'DUMMY_SECRET')]) {
+                        echo "Fetched secret: ${DUMMY_SECRET}"
+                    }
+                }
+            }
+        }
+    }
+}
+
