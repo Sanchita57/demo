@@ -11,4 +11,8 @@ stages {
 	   }
     }
   }
+
+https://medium.com/geekculture/integrate-hashicorp-vault-with-cicd-tool-jenkins-4bf712ad3f45
+
+
 }
