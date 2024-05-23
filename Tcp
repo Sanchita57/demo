@@ -1,17 +1,14 @@
-import socket
-
-def test_connection(ip, port):
-    try:
-        s = socket.create_connection((ip, port), timeout=5)
-        s.close()
-        return True
-    except Exception as e:
-        print(f"Connection failed: {e}")
-        return False
-
-ip = "10.7.195.71"
-port = 1433
-if test_connection(ip, port):
-    print("Connection successful")
-else:
-    print("Connection failed")
+pipeline {
+agent any
+stages {
+   stage('Pipeline-Config'){
+   steps{
+      withVault(configuration: [vaultGlobal: 'e697b6f6-db61-4dd3-97f0-6cb668d7ec51', vaultUrl: 'https://hcvdev.fiscloudservices.com'], vaultSecrets: [[engineVersion: 2, path: '/vi/auth/approle/teller_user_role/login', secretValues: [[envVar: 'username', vaultKey: 'user']]]]) 
+	  {
+           sh "echo $user"
+       }
+	   
+	   }
+    }
+  }
+}
