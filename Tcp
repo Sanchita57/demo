@@ -198,3 +198,179 @@ echo Agent pid 13700 killed;
 [Pipeline] End of Pipeline
 job/IBSSRM-Development/job/IBSSRM-Development-migrate-DevUnit_Desktop/34/
 Finished: SUCCESS
+
+
+@@@@@@
+detail explaination
+@@@@@@
+### Detailed Explanation of Jenkins Job Console Output with Reasons
+
+This detailed breakdown includes reasons and motivations behind each step in the Jenkins job console output, providing a comprehensive understanding of the process.
+
+#### Library Loading
+1. **Loading library `jenkins-pipeline-deploy-library@master`**
+   - **Reason:** Jenkins uses shared libraries to encapsulate reusable code. Loading the library allows the pipeline to access predefined functions and resources from the `master` branch of the `jenkins-pipeline-deploy-library`.
+
+#### Git Operations
+2. **Attempting to resolve master from remote references...**
+   - **Reason:** Jenkins needs to ensure it is working with the correct branch (`master`) from the remote Git repository to fetch the latest code and configurations.
+
+3. **Git version check**
+   - **Reason:** Checking the Git version ensures compatibility with the repository operations. The command verifies the installed Git version:
+     ```sh
+     git --version # 'git version 2.22.0'
+     ```
+
+4. **Setting credentials**
+   - **Reason:** Credentials (`cm-credentials-id`) are required to authenticate and access the private Git repository securely:
+     ```sh
+     using GIT_ASKPASS to set credentials cm-credentials-id credentials
+     ```
+
+5. **Listing remote references**
+   - **Reason:** Jenkins lists remote references to locate the `master` branch, which contains the latest codebase to be used in the pipeline:
+     ```sh
+     git ls-remote -h -- https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git # timeout=30
+     ```
+
+6. **Match found for master branch**
+   - **Reason:** Confirming that the `master` branch exists and fetching the latest commit hash (`4bc3c06690b120b72af2a9cec423e33273d09f5c`) ensures that the pipeline uses the most recent code:
+     ```sh
+     Found match: refs/heads/master revision 4bc3c06690b120b72af2a9cec423e33273d09f5c
+     ```
+
+7. **Recommended git tool**
+   - **Reason:** Jenkins might recommend specific tools or versions for optimal performance or compatibility. In this case, it indicates `NONE` as no specific tool is recommended.
+
+8. **Git operations in workspace**
+   - **Reason:** These steps prepare the workspace by configuring the remote URL, fetching changes, and checking out the specified commit. This ensures that the pipeline operates on the correct codebase:
+     ```sh
+     using credential cm-credentials-id
+     git rev-parse --resolve-git-dir /data2/jenkins/workspace/.../.git # timeout=30
+     Fetching changes from the remote Git repository
+     git config remote.origin.url https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git # timeout=30
+     Fetching without tags
+     git fetch --no-tags --force --progress -- https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git +refs/heads/*:refs/remotes/origin/* # timeout=30
+     Checking out Revision 4bc3c06690b120b72af2a9cec423e33273d09f5c (master)
+     git config core.sparsecheckout # timeout=30
+     git checkout -f 4bc3c06690b120b72af2a9cec423e33273d09f5c # timeout=30
+     ```
+
+9. **Commit message**
+   - **Reason:** Displaying the commit message (`"prod changes masibs"`) provides context for the changes in the checked-out code:
+     ```sh
+     Commit message: "prod changes masibs"
+     ```
+
+#### Pipeline Execution
+10. **Pipeline start**
+    - **Reason:** Indicates the beginning of the pipeline execution, signaling that subsequent steps will follow the defined pipeline stages:
+      ```sh
+      [Pipeline] Start of Pipeline
+      ```
+
+11. **Node block**
+    - **Reason:** Specifies the agent (`jdk8`) where the pipeline will execute, providing control over the environment and resources used:
+      ```sh
+      [Pipeline] node
+      Still waiting to schedule task
+      Waiting for next available executor on ‘jdk8’
+      Running on bnk-jdk-slave1-41bf7c26 in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop
+      ```
+
+12. **Stage: Deploy**
+    - **Reason:** Entering the `deploy` stage organizes the pipeline into logical phases, making it easier to manage and understand the deployment process:
+      ```sh
+      [Pipeline] stage
+      [Pipeline] { (deploy)
+      ```
+
+#### SSH Agent Setup
+13. **SSH Agent configuration**
+    - **Reason:** Configuring the SSH agent with `jenkins` credentials allows secure, automated interactions with remote servers for deployment tasks:
+      ```sh
+      [Pipeline] sshagent
+      [ssh-agent] Using credentials jenkins
+      ```
+
+14. **SSH agent implementation and setup**
+    - **Reason:** Initializing and starting the SSH agent securely manages SSH keys, enabling secure command execution on remote servers:
+      ```sh
+      [ssh-agent] Looking for ssh-agent implementation...
+      [ssh-agent]   Exec ssh-agent (binary ssh-agent on a remote machine)
+      $ ssh-agent
+      SSH_AUTH_SOCK=/tmp/ssh-UH3jw1bGMw8c/agent.13691
+      SSH_AGENT_PID=13700
+      Running ssh-add (command line suppressed)
+      Identity added: /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop@tmp/private_key_5294313437408370748.key (/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop@tmp/private_key_5294313437408370748.key)
+      [ssh-agent] Started.
+      ```
+
+#### Shell Commands
+15. **Cleaning workspace directories**
+    - **Reason:** Removing specific directories ensures a clean workspace, preventing conflicts with previous builds or leftover files:
+      ```sh
+      [Pipeline] sh
+      + rm -rf '/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/*'
+      ```
+
+16. **Directory change**
+    - **Reason:** Navigating to the deploy scripts directory organizes and isolates the execution of deployment scripts:
+      ```sh
+      [Pipeline] dir
+      Running in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_deploy_migrate_scripts
+      ```
+
+17. **Using credentials for secure operations**
+    - **Reason:** Setting up environment variables securely ensures sensitive information like usernames and passwords are protected during script execution:
+      ```sh
+      [Pipeline] withCredentials
+      Masking supported pattern matches of $USERNAME or $PASSWORD
+      ```
+
+18. **Download deploy scripts**
+    - **Reason:** Downloading deployment scripts from Artifactory ensures that the latest, version-controlled scripts are used in the deployment process:
+      ```sh
+      [Pipeline] sh
+      Warning: A secret was passed to "sh" using Groovy String interpolation, which is insecure.
+       Affected argument(s) used the following variable(s): [PASSWORD, USERNAME]
+       See https://jenkins.io/redirect/groovy-string-interpolation for details.
+      + curl --user ****:**** -s -k -f -o jenkins_deploy_migrate_scripts.zip https://artifactory.fis.dev/artifactory/harvest-maven-snapshot-local/Jenkins_deploy_migrate_scripts/jenkins_deploy_migrate_scripts/0.1.0-SNAPSHOT/jenkins_deploy_migrate_scripts-0.1.0-SNAPSHOT.zip
+      ```
+
+19. **Unzipping downloaded scripts**
+    - **Reason:** Extracting the downloaded ZIP file prepares the scripts for execution, making them accessible in the pipeline workspace:
+      ```sh
+      [Pipeline] sh
+      + unzip -q jenkins_deploy_migrate_scripts.zip
+      ```
+
+20. **Navigating to src directory**
+    - **Reason:** Moving to the source directory ensures the execution environment is correctly set up for running the Perl scripts:
+      ```sh
+      [Pipeline] dir
+      Running in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_deploy_migrate_scripts/src
+      ```
+
+21. **Using credentials for secure operations**
+    - **Reason:** Setting up environment variables securely ensures sensitive information like usernames and passwords are protected during script execution:
+      ```sh
+      [Pipeline] withCredentials
+      Masking supported pattern matches of $USERNAME or $PASSWORD
+      ```
+
+22. **Running the Perl deployment script**
+    - **Reason:** Executing a Perl script with sensitive credentials automates deployment tasks, leveraging scripts tailored for specific deployment steps:
+      ```sh
+      [Pipeline] sh
+      Warning: A secret was passed to "sh" using Groovy String interpolation, which is insecure.
+       Affected argument(s) used the following variable(s): [PASSWORD, USERNAME]
+       See https://jenkins.io/redirect/groovy-string-interpolation for details.
+      + /usr/bin/perl deploy_migrate_001_bnk.pl **** ****
+      ```
+
+#### Perl Script Output
+23. **Script execution details**
+    - **Reason:** Provides detailed output from the Perl script to track the progress and verify the correct parameters and inputs are being used:
+     
+
