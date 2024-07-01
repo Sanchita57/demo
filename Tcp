@@ -191,3 +191,218 @@ echo Agent pid 16382 killed;
 [Pipeline] // node
 [Pipeline] End of Pipeline
 Finished: SUCCESS
+
+
+
+@@@@@@@@@@@@@@@@
+explaination
+@@@@@@@@@@@@@@@@
+### Detailed Explanation of Jenkins Job Console Output
+
+The provided Jenkins job console output details the execution of a Jenkins pipeline. Below is an in-depth explanation of each step in the console output:
+
+#### Library Loading
+1. **Loading library jenkins-pipeline-deploy-library@master**
+   - Jenkins is loading a shared library named `jenkins-pipeline-deploy-library` from the `master` branch.
+
+#### Git Operations
+2. **Attempting to resolve master from remote references...**
+   - Jenkins tries to locate the `master` branch in the remote Git repository.
+
+3. **Git version check**
+   - Jenkins checks the installed Git version to ensure it is compatible:
+     ```sh
+     git --version # timeout=30
+     git --version # 'git version 2.22.0'
+     ```
+
+4. **Setting credentials**
+   - Using `cm-credentials-id` for authentication with the Git repository:
+     ```sh
+     using GIT_ASKPASS to set credentials cm-credentials-id credentials
+     ```
+
+5. **Listing remote references**
+   - Jenkins lists remote references to find the `master` branch:
+     ```sh
+     git ls-remote -h -- https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git # timeout=30
+     ```
+
+6. **Match found for master branch**
+   - It finds the `master` branch with a specific commit hash:
+     ```sh
+     Found match: refs/heads/master revision fc5a28192de714d5c218faf4ff7ff1332c0b4a92
+     ```
+
+7. **Recommended git tool**
+   - Jenkins notes that the recommended Git tool is `NONE`.
+
+8. **Git operations in workspace**
+   - Resolving Git directory and fetching changes:
+     ```sh
+     using credential cm-credentials-id
+     git rev-parse --resolve-git-dir /var/jenkins_home/workspace/.../.git # timeout=30
+     Fetching changes from the remote Git repository
+     git config remote.origin.url https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git # timeout=30
+     Fetching without tags
+     git fetch --no-tags --force --progress -- https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git +refs/heads/*:refs/remotes/origin/* # timeout=30
+     Checking out Revision fc5a28192de714d5c218faf4ff7ff1332c0b4a92 (master)
+     git config core.sparsecheckout # timeout=30
+     git checkout -f fc5a28192de714d5c218faf4ff7ff1332c0b4a92 # timeout=30
+     ```
+
+9. **Commit message**
+   - The commit message of the checked-out revision:
+     ```sh
+     Commit message: "test email"
+     ```
+
+#### Pipeline Execution
+10. **Pipeline start**
+    - Jenkins indicates the start of the pipeline:
+      ```sh
+      [Pipeline] Start of Pipeline
+      ```
+
+11. **Node block**
+    - Specifies the node (agent) where the pipeline will run:
+      ```sh
+      [Pipeline] node
+      Running on bnk-jdk-slave2-d8a9f06b in /home/jenkins/workspace/...
+      ```
+
+12. **Stage: Deploy**
+    - Enters the deploy stage:
+      ```sh
+      [Pipeline] stage
+      [Pipeline] { (deploy)
+      ```
+
+#### SSH Agent Setup
+13. **SSH Agent configuration**
+    - Using `jenkins` credentials for SSH:
+      ```sh
+      [Pipeline] sshagent
+      [ssh-agent] Using credentials jenkins
+      ```
+
+14. **SSH agent implementation and setup**
+    - Initializing and starting the SSH agent:
+      ```sh
+      [ssh-agent] Looking for ssh-agent implementation...
+      [ssh-agent]   Exec ssh-agent (binary ssh-agent on a remote machine)
+      $ ssh-agent
+      SSH_AUTH_SOCK=/tmp/ssh-jhiNGsTVfECC/agent.16380
+      SSH_AGENT_PID=16382
+      Running ssh-add (command line suppressed)
+      Identity added: /home/jenkins/workspace/.../private_key_31893338861130701.key
+      [ssh-agent] Started.
+      ```
+
+#### Shell Commands
+15. **Cleaning workspace directories**
+    - Removing specific directories:
+      ```sh
+      [Pipeline] sh
+      + rm -rf /home/jenkins/workspace/.../application_data /home/jenkins/workspace/.../jenkins_application_control_files /home/jenkins/workspace/.../jenkins_deploy_migrate_scripts /home/jenkins/workspace/.../jenkins_deploy_migrate_scripts@tmp
+      ```
+
+16. **Directory change**
+    - Navigates to the deploy scripts directory:
+      ```sh
+      [Pipeline] dir
+      Running in /home/jenkins/workspace/.../jenkins_deploy_migrate_scripts
+      ```
+
+17. **Using credentials for secure operations**
+    - Setting up environment variables securely:
+      ```sh
+      [Pipeline] withCredentials
+      Masking supported pattern matches of $USERNAME or $PASSWORD
+      ```
+
+18. **Download deploy scripts**
+    - Downloading deployment scripts from Artifactory:
+      ```sh
+      [Pipeline] sh
+      + curl --user ****:**** -s -k -f -o jenkins_deploy_migrate_scripts.zip https://artifactory.fis.dev/artifactory/harvest-maven-snapshot-local/.../jenkins_deploy_migrate_scripts-0.1.0-SNAPSHOT.zip
+      ```
+
+19. **Unzipping downloaded scripts**
+    - Extracting the downloaded ZIP file:
+      ```sh
+      [Pipeline] sh
+      + unzip -q jenkins_deploy_migrate_scripts.zip
+      ```
+
+20. **Navigating to src directory**
+    - Moving to the source directory for the scripts:
+      ```sh
+      [Pipeline] dir
+      Running in /home/jenkins/workspace/.../jenkins_deploy_migrate_scripts/src
+      ```
+
+21. **Running the Perl deployment script**
+    - Executing a Perl script with sensitive credentials:
+      ```sh
+      [Pipeline] sh
+      + /usr/bin/perl deploy_migrate_001_bnk_IBS_Jboss.pl **** ****
+      ```
+
+#### Perl Script Output
+22. **Script execution details**
+    - Provides detailed output from the Perl script:
+      ```plaintext
+      ---
+      --- JOB INPUTS
+      ---
+      job_name                   is:IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop
+      artifactory_version_number is:2.0.Mod-SNAPSHOT
+      ticket_number              is:
+      execute_type               is:execute
+      ws_operation               is:
+      jb_operation               is:bounce
+      app_group                  is:IBSSRM
+      env                        is:Development
+      deploy_type                is:JBoss
+      app_name                   is:DevSys_SRM_Desktop
+      ini_name                   is:IBSSRM-Development-JBoss-DevSys_SRM_Desktop
+      ```
+
+23. **Extract application control files**
+    - Downloading application control files:
+      ```plaintext
+      --- cmd is:curl --user ****:**** -s -k -f -o /home/jenkins/workspace/.../IBSSRM.zip https://artifactory.fis.dev/artifactory/.../IBSSRM-0.1.0-SNAPSHOT.zip
+      ```
+
+24. **Unzip application control files**
+    - Unzipping the downloaded control files:
+      ```plaintext
+      --- cmd is:unzip -q /home/jenkins/workspace/.../IBSSRM.zip -d /home/jenkins/workspace/.../jenkins_application_control_files
+      ```
+
+25. **Read control file**
+    - Reading the control file for deployment instructions:
+      ```plaintext
+      --- Read jboss application control file:/home/jenkins/workspace/.../IBSSRM-Development-deploy-DevSys_SRM_Desktop.ini
+      ```
+
+26. **Control file details**
+    - Displays key details from the control file:
+      ```plaintext
+      artifactory_path       is: https://artifactory.fis.dev/artifactory/ibssrm-maven-snapshot-local/com/fis/IBS/srm/mod
+      artifactory_filename   is: opstopsrm
+      artifactory_filetype   is: ear
+      jboss_app_name         is: MD_Desktop_SRM_Dev_Sys
+      jboss_server           is: vlmazibsdm.fisdev.local
+      jboss_node_name        is: MD_Desktop_SRM_Dev_Sys
+      jboss_cmd_dir          is: /tmp/test/
+      ```
+
+27. **Execute JBoss bounce**
+    - Executing a JBoss server bounce using a Perl wrapper script:
+      ```plaintext
+      --- cmd is:/bin/scp -q -o StrictHostKeyChecking=no /home/jenkins/workspace/.../ibs_jboss_wrapper.pl jbadmin@vlmazibsdm.fisdev.local:/tmp/test/
+      --- cmd is:/bin/ssh -q -o StrictHostKeyChecking=no jbadmin@vlmazibsdm.fisdev.local chmod 755 /tmp/test//ibs_jboss_wrapper.pl
+      --- cmd is:/bin/ssh -q -o StrictHostKeyChecking=no jbadmin@vlmazibsdm.fisdev.local perl /tmp/test//ibs_jboss_wrapper.pl bounce /opt/JbossEAP/7.4/j
+
