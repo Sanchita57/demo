@@ -25,10 +25,10 @@ Attempting to resolve master from remote references...
  > git --version # 'git version 2.22.0'
 using GIT_ASKPASS to set credentials cm-credentials-id credentials
  > git ls-remote -h -- https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git # timeout=30
-Found match: refs/heads/master revision fc5a28192de714d5c218faf4ff7ff1332c0b4a92
+Found match: refs/heads/master revision 4bc3c06690b120b72af2a9cec423e33273d09f5c
 The recommended git tool is: NONE
 using credential cm-credentials-id
- > git rev-parse --resolve-git-dir /var/jenkins_home/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop@libs/f5e7f94a0feb41ae0e1f84d6c66d27b24ef0af5bf59db11cdacebd1b167ff23d/.git # timeout=30
+ > git rev-parse --resolve-git-dir /data2/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop@libs/f5e7f94a0feb41ae0e1f84d6c66d27b24ef0af5bf59db11cdacebd1b167ff23d/.git # timeout=30
 Fetching changes from the remote Git repository
  > git config remote.origin.url https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git # timeout=30
 Fetching without tags
@@ -37,13 +37,15 @@ Fetching upstream changes from https://bam-build@bitbucket.fis.dev/scm/jdm/deplo
  > git --version # 'git version 2.22.0'
 using GIT_ASKPASS to set credentials cm-credentials-id credentials
  > git fetch --no-tags --force --progress -- https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git +refs/heads/*:refs/remotes/origin/* # timeout=30
-Checking out Revision fc5a28192de714d5c218faf4ff7ff1332c0b4a92 (master)
+Checking out Revision 4bc3c06690b120b72af2a9cec423e33273d09f5c (master)
  > git config core.sparsecheckout # timeout=30
- > git checkout -f fc5a28192de714d5c218faf4ff7ff1332c0b4a92 # timeout=30
-Commit message: "test email"
+ > git checkout -f 4bc3c06690b120b72af2a9cec423e33273d09f5c # timeout=30
+Commit message: "prod changes masibs"
 [Pipeline] Start of Pipeline
 [Pipeline] node
-Running on bnk-jdk-slave2-d8a9f06b in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop
+Still waiting to schedule task
+Waiting for next available executor on ‘jdk8’
+Running on bnk-jdk-slave1-41bf7c26 in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop
 [Pipeline] {
 [Pipeline] stage
 [Pipeline] { (deploy)
@@ -52,16 +54,16 @@ Running on bnk-jdk-slave2-d8a9f06b in /home/jenkins/workspace/IBSSRM-Development
 [ssh-agent] Looking for ssh-agent implementation...
 [ssh-agent]   Exec ssh-agent (binary ssh-agent on a remote machine)
 $ ssh-agent
-SSH_AUTH_SOCK=/tmp/ssh-jhiNGsTVfECC/agent.16380
-SSH_AGENT_PID=16382
+SSH_AUTH_SOCK=/tmp/ssh-UH3jw1bGMw8c/agent.13691
+SSH_AGENT_PID=13700
 Running ssh-add (command line suppressed)
-Identity added: /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop@tmp/private_key_31893338861130701.key (/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop@tmp/private_key_31893338861130701.key)
+Identity added: /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop@tmp/private_key_5294313437408370748.key (/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop@tmp/private_key_5294313437408370748.key)
 [ssh-agent] Started.
 [Pipeline] {
 [Pipeline] sh
-+ rm -rf /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop/application_data /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop/jenkins_application_control_files /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop/jenkins_deploy_migrate_scripts /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop/jenkins_deploy_migrate_scripts@tmp
++ rm -rf '/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/*'
 [Pipeline] dir
-Running in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop/jenkins_deploy_migrate_scripts
+Running in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_deploy_migrate_scripts
 [Pipeline] {
 [Pipeline] withCredentials
 Masking supported pattern matches of $USERNAME or $PASSWORD
@@ -78,7 +80,7 @@ Warning: A secret was passed to "sh" using Groovy String interpolation, which is
 [Pipeline] }
 [Pipeline] // dir
 [Pipeline] dir
-Running in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop/jenkins_deploy_migrate_scripts/src
+Running in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_deploy_migrate_scripts/src
 [Pipeline] {
 [Pipeline] withCredentials
 Masking supported pattern matches of $USERNAME or $PASSWORD
@@ -87,93 +89,97 @@ Masking supported pattern matches of $USERNAME or $PASSWORD
 Warning: A secret was passed to "sh" using Groovy String interpolation, which is insecure.
 		 Affected argument(s) used the following variable(s): [PASSWORD, USERNAME]
 		 See https://jenkins.io/redirect/groovy-string-interpolation for details.
-+ /usr/bin/perl deploy_migrate_001_bnk_IBS_Jboss.pl **** ****
++ /usr/bin/perl deploy_migrate_001_bnk.pl **** ****
 ----------------------------------------------------------------------------
 ---
 --- JOB INPUTS
 ---
 ----------------------------------------------------------------------------
 
-job_name                   is:IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop
-artifactory_version_number is:2.0.Mod-SNAPSHOT
+job_name                   is:IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop
+artifactory_version_number is:May2024.1R-SNAPSHOT
 ticket_number              is:
 execute_type               is:execute
 ws_operation               is:
-jb_operation               is:bounce
+jb_operation               is:
 app_group                  is:IBSSRM
 env                        is:Development
-deploy_type                is:JBoss
-app_name                   is:DevSys_SRM_Desktop
-ini_name                   is:IBSSRM-Development-JBoss-DevSys_SRM_Desktop
+deploy_type                is:migrate
+app_name                   is:DevUnit_Desktop
+ini_name                   is:IBSSRM-Development-migrate-DevUnit_Desktop
 ----------------------------------------------------------------------------
 ---
 --- Extract application control files from Artifactory
 ---
 ----------------------------------------------------------------------------
 
---- cmd is:curl --user ****:**** -s -k -f -o /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop/jenkins_application_control_files/IBSSRM.zip https://artifactory.fis.dev/artifactory/harvest-maven-snapshot-local/Jenkins_application_control_files/IBSSRM/0.1.0-SNAPSHOT/IBSSRM-0.1.0-SNAPSHOT.zip
+--- cmd is:curl --user ****:**** -s -k -f -o /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_application_control_files/IBSSRM.zip https://artifactory.fis.dev/artifactory/harvest-maven-snapshot-local/Jenkins_application_control_files/IBSSRM/0.1.0-SNAPSHOT/IBSSRM-0.1.0-SNAPSHOT.zip
 ----------------------------------------------------------------------------
 ---
 --- Unzip application control files
 ---
 ----------------------------------------------------------------------------
 
---- cmd is:unzip -q /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop/jenkins_application_control_files/IBSSRM.zip -d /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop/jenkins_application_control_files
+--- cmd is:unzip -q /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_application_control_files/IBSSRM.zip -d /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_application_control_files
 ----------------------------------------------------------------------------
 ---
---- Read jboss application control file:/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop/jenkins_application_control_files/src/IBSSRM-Development-deploy-DevSys_SRM_Desktop.ini
----
-----------------------------------------------------------------------------
-
-artifactory_path       is: https://artifactory.fis.dev/artifactory/ibssrm-maven-snapshot-local/com/fis/IBS/srm/mod
-artifactory_filename   is: opstopsrm
-artifactory_filetype   is: ear
-artifactory_classifier is: 
-jboss_app_name         is: MD_Desktop_SRM_Dev_Sys
-jboss_server           is: vlmazibsdm.fisdev.local
-jboss_node_name        is: MD_Desktop_SRM_Dev_Sys
-jboss_cmd_dir          is: /tmp/test/
-jboss_cmd              is: 
-jboss_war_dir          is: /tmp/test
-jboss_unzip_dir        is: /tmp/test
-jboss_log_file         is: 
-jboss_admin_user       is: jbadmin
-----------------------------------------------------------------------------
----
---- Execute jboss bounce
+--- Execute  migration
 ---
 ----------------------------------------------------------------------------
 
+ini_file is:/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_application_control_files/src/IBSSRM-Development-migrate-DevUnit_Desktop.ini
 ----------------------------------------------------------------------------
 ---
---- Copy bounce script:ibs_jboss_wrapper.pl to:/tmp/test/
----
-----------------------------------------------------------------------------
-
---- cmd is:/bin/scp -q -o StrictHostKeyChecking=no /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop/jenkins_deploy_migrate_scripts/src/ibs_jboss_wrapper.pl jbadmin@vlmazibsdm.fisdev.local:/tmp/test/
-----------------------------------------------------------------------------
----
---- set permissions on bounce script /tmp/test//ibs_jboss_wrapper.pl
+--- Read read application control file:/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_application_control_files/src/IBSSRM-Development-migrate-DevUnit_Desktop.ini
 ---
 ----------------------------------------------------------------------------
 
---- cmd is:/bin/ssh -q -o StrictHostKeyChecking=no jbadmin@vlmazibsdm.fisdev.local chmod 755 /tmp/test//ibs_jboss_wrapper.pl
+artifactory_path       is: https://artifactory.fis.dev/artifactory/ibssrm-maven-snapshot-local/com/fis/IBS/srm
+artifactory_filename   is: properties
+artifactory_filetype   is: jar
+artifactory_classifier is: unit_dev
+target_servers        are: vlcapdccibsapp1.fisdev.local
+target_dir             is: /application/SRM_Desktop/EnvJars
+target_owner           is: wasadmin
+target_group           is: wasadm
+target_perms          are: 755
+clean_target_dir       is: no
+uncompress             is: no
+update_target_dir      is: yes
+set_target_dir_perms   is: yes
+scripts_to_execute    are: none
 ----------------------------------------------------------------------------
 ---
---- Execute bounce script:/tmp/test//ibs_jboss_wrapper.pl
+--- Extract application migration file from Artifactory
 ---
 ----------------------------------------------------------------------------
 
---- cmd is:/bin/ssh -q -o StrictHostKeyChecking=no jbadmin@vlmazibsdm.fisdev.local perl /tmp/test//ibs_jboss_wrapper.pl bounce /opt/JbossEAP/7.4/jboss-eap-7.4_DevSys /opt/JbossEAP/7.4/java_11/java-11-openjdk-11.0.14.1.1-1.portable.jre.el.x86_64 /opt/JbossEAP/7.4/jboss-eap-7.4_DevSys/bin --connect --controller=vlmazibsdm.fisdev.local:9980 MD_Desktop_SRM_Dev_Sys jboss-cli.sh /tmp/test/ opstopsrm vlmazibsdm.fisdev.local MD_Desktop_SRM_Dev_Sys
-JAVA_HOME    is: /opt/JbossEAP/7.4/java_11/java-11-openjdk-11.0.14.1.1-1.portable.jre.el.x86_64
-JBOSS_HOME   is: /opt/JbossEAP/7.4/jboss-eap-7.4_DevSys
-current working directory is:/opt/JbossEAP/7.4/jboss-eap-7.4_DevSys/bin
-$pwuid = jbadmin
-{
-    "outcome" => "success",
-    "result" => undefined,
-    "server-groups" => undefined
-}
+--- cmd is:curl --user ****:**** -s -k -f -o /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/application_data/properties.jar https://artifactory.fis.dev/artifactory/ibssrm-maven-snapshot-local/com/fis/IBS/srm/properties/May2024.1R-SNAPSHOT/properties-May2024.1R-SNAPSHOT-unit_dev.jar
+----------------------------------------------------------------------------
+---
+--- Process migration to target_machine vlcapdccibsapp1.fisdev.local
+---
+----------------------------------------------------------------------------
+
+--- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local mkdir -p /application/SRM_Desktop/EnvJars/tmp
+--- Copy application file to tmp dir /application/SRM_Desktop/EnvJars/tmp
+--- cmd is:scp -q -o StrictHostKeyChecking=no /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/application_data/properties.jar wasadmin@vlcapdccibsapp1.fisdev.local:/application/SRM_Desktop/EnvJars/tmp
+--- set ownership, group and file permissions on directory /application/SRM_Desktop/EnvJars/tmp
+--- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local chown -R wasadmin:wasadm /application/SRM_Desktop/EnvJars/tmp
+--- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local chmod -R 755 /application/SRM_Desktop/EnvJars/tmp
+--- Copy files to target directory /application/SRM_Desktop/EnvJars
+--- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local cp -r /application/SRM_Desktop/EnvJars/tmp/* /application/SRM_Desktop/EnvJars
+--- set ownership, group and file permissions on directory /application/SRM_Desktop/EnvJars
+--- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local chown -R wasadmin:wasadm /application/SRM_Desktop/EnvJars
+--- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local chmod -R 755 /application/SRM_Desktop/EnvJars
+--- Remove tmp directory /application/SRM_Desktop/EnvJars/tmp
+--- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local rm -rf /application/SRM_Desktop/EnvJars/tmp
+----------------------------------------------------------------------------
+---
+--- Migration completed to all machines - please review log
+---
+----------------------------------------------------------------------------
+
 [Pipeline] }
 [Pipeline] // withCredentials
 [Pipeline] }
@@ -182,7 +188,7 @@ $pwuid = jbadmin
 $ ssh-agent -k
 unset SSH_AUTH_SOCK;
 unset SSH_AGENT_PID;
-echo Agent pid 16382 killed;
+echo Agent pid 13700 killed;
 [ssh-agent] Stopped.
 [Pipeline] // sshagent
 [Pipeline] }
@@ -190,219 +196,5 @@ echo Agent pid 16382 killed;
 [Pipeline] }
 [Pipeline] // node
 [Pipeline] End of Pipeline
+job/IBSSRM-Development/job/IBSSRM-Development-migrate-DevUnit_Desktop/34/
 Finished: SUCCESS
-
-
-
-@@@@@@@@@@@@@@@@
-explaination
-@@@@@@@@@@@@@@@@
-### Detailed Explanation of Jenkins Job Console Output
-
-The provided Jenkins job console output details the execution of a Jenkins pipeline. Below is an in-depth explanation of each step in the console output:
-
-#### Library Loading
-1. **Loading library jenkins-pipeline-deploy-library@master**
-   - Jenkins is loading a shared library named `jenkins-pipeline-deploy-library` from the `master` branch.
-
-#### Git Operations
-2. **Attempting to resolve master from remote references...**
-   - Jenkins tries to locate the `master` branch in the remote Git repository.
-
-3. **Git version check**
-   - Jenkins checks the installed Git version to ensure it is compatible:
-     ```sh
-     git --version # timeout=30
-     git --version # 'git version 2.22.0'
-     ```
-
-4. **Setting credentials**
-   - Using `cm-credentials-id` for authentication with the Git repository:
-     ```sh
-     using GIT_ASKPASS to set credentials cm-credentials-id credentials
-     ```
-
-5. **Listing remote references**
-   - Jenkins lists remote references to find the `master` branch:
-     ```sh
-     git ls-remote -h -- https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git # timeout=30
-     ```
-
-6. **Match found for master branch**
-   - It finds the `master` branch with a specific commit hash:
-     ```sh
-     Found match: refs/heads/master revision fc5a28192de714d5c218faf4ff7ff1332c0b4a92
-     ```
-
-7. **Recommended git tool**
-   - Jenkins notes that the recommended Git tool is `NONE`.
-
-8. **Git operations in workspace**
-   - Resolving Git directory and fetching changes:
-     ```sh
-     using credential cm-credentials-id
-     git rev-parse --resolve-git-dir /var/jenkins_home/workspace/.../.git # timeout=30
-     Fetching changes from the remote Git repository
-     git config remote.origin.url https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git # timeout=30
-     Fetching without tags
-     git fetch --no-tags --force --progress -- https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git +refs/heads/*:refs/remotes/origin/* # timeout=30
-     Checking out Revision fc5a28192de714d5c218faf4ff7ff1332c0b4a92 (master)
-     git config core.sparsecheckout # timeout=30
-     git checkout -f fc5a28192de714d5c218faf4ff7ff1332c0b4a92 # timeout=30
-     ```
-
-9. **Commit message**
-   - The commit message of the checked-out revision:
-     ```sh
-     Commit message: "test email"
-     ```
-
-#### Pipeline Execution
-10. **Pipeline start**
-    - Jenkins indicates the start of the pipeline:
-      ```sh
-      [Pipeline] Start of Pipeline
-      ```
-
-11. **Node block**
-    - Specifies the node (agent) where the pipeline will run:
-      ```sh
-      [Pipeline] node
-      Running on bnk-jdk-slave2-d8a9f06b in /home/jenkins/workspace/...
-      ```
-
-12. **Stage: Deploy**
-    - Enters the deploy stage:
-      ```sh
-      [Pipeline] stage
-      [Pipeline] { (deploy)
-      ```
-
-#### SSH Agent Setup
-13. **SSH Agent configuration**
-    - Using `jenkins` credentials for SSH:
-      ```sh
-      [Pipeline] sshagent
-      [ssh-agent] Using credentials jenkins
-      ```
-
-14. **SSH agent implementation and setup**
-    - Initializing and starting the SSH agent:
-      ```sh
-      [ssh-agent] Looking for ssh-agent implementation...
-      [ssh-agent]   Exec ssh-agent (binary ssh-agent on a remote machine)
-      $ ssh-agent
-      SSH_AUTH_SOCK=/tmp/ssh-jhiNGsTVfECC/agent.16380
-      SSH_AGENT_PID=16382
-      Running ssh-add (command line suppressed)
-      Identity added: /home/jenkins/workspace/.../private_key_31893338861130701.key
-      [ssh-agent] Started.
-      ```
-
-#### Shell Commands
-15. **Cleaning workspace directories**
-    - Removing specific directories:
-      ```sh
-      [Pipeline] sh
-      + rm -rf /home/jenkins/workspace/.../application_data /home/jenkins/workspace/.../jenkins_application_control_files /home/jenkins/workspace/.../jenkins_deploy_migrate_scripts /home/jenkins/workspace/.../jenkins_deploy_migrate_scripts@tmp
-      ```
-
-16. **Directory change**
-    - Navigates to the deploy scripts directory:
-      ```sh
-      [Pipeline] dir
-      Running in /home/jenkins/workspace/.../jenkins_deploy_migrate_scripts
-      ```
-
-17. **Using credentials for secure operations**
-    - Setting up environment variables securely:
-      ```sh
-      [Pipeline] withCredentials
-      Masking supported pattern matches of $USERNAME or $PASSWORD
-      ```
-
-18. **Download deploy scripts**
-    - Downloading deployment scripts from Artifactory:
-      ```sh
-      [Pipeline] sh
-      + curl --user ****:**** -s -k -f -o jenkins_deploy_migrate_scripts.zip https://artifactory.fis.dev/artifactory/harvest-maven-snapshot-local/.../jenkins_deploy_migrate_scripts-0.1.0-SNAPSHOT.zip
-      ```
-
-19. **Unzipping downloaded scripts**
-    - Extracting the downloaded ZIP file:
-      ```sh
-      [Pipeline] sh
-      + unzip -q jenkins_deploy_migrate_scripts.zip
-      ```
-
-20. **Navigating to src directory**
-    - Moving to the source directory for the scripts:
-      ```sh
-      [Pipeline] dir
-      Running in /home/jenkins/workspace/.../jenkins_deploy_migrate_scripts/src
-      ```
-
-21. **Running the Perl deployment script**
-    - Executing a Perl script with sensitive credentials:
-      ```sh
-      [Pipeline] sh
-      + /usr/bin/perl deploy_migrate_001_bnk_IBS_Jboss.pl **** ****
-      ```
-
-#### Perl Script Output
-22. **Script execution details**
-    - Provides detailed output from the Perl script:
-      ```plaintext
-      ---
-      --- JOB INPUTS
-      ---
-      job_name                   is:IBSSRM-Development/IBSSRM-Development-JBoss-DevSys_SRM_Desktop
-      artifactory_version_number is:2.0.Mod-SNAPSHOT
-      ticket_number              is:
-      execute_type               is:execute
-      ws_operation               is:
-      jb_operation               is:bounce
-      app_group                  is:IBSSRM
-      env                        is:Development
-      deploy_type                is:JBoss
-      app_name                   is:DevSys_SRM_Desktop
-      ini_name                   is:IBSSRM-Development-JBoss-DevSys_SRM_Desktop
-      ```
-
-23. **Extract application control files**
-    - Downloading application control files:
-      ```plaintext
-      --- cmd is:curl --user ****:**** -s -k -f -o /home/jenkins/workspace/.../IBSSRM.zip https://artifactory.fis.dev/artifactory/.../IBSSRM-0.1.0-SNAPSHOT.zip
-      ```
-
-24. **Unzip application control files**
-    - Unzipping the downloaded control files:
-      ```plaintext
-      --- cmd is:unzip -q /home/jenkins/workspace/.../IBSSRM.zip -d /home/jenkins/workspace/.../jenkins_application_control_files
-      ```
-
-25. **Read control file**
-    - Reading the control file for deployment instructions:
-      ```plaintext
-      --- Read jboss application control file:/home/jenkins/workspace/.../IBSSRM-Development-deploy-DevSys_SRM_Desktop.ini
-      ```
-
-26. **Control file details**
-    - Displays key details from the control file:
-      ```plaintext
-      artifactory_path       is: https://artifactory.fis.dev/artifactory/ibssrm-maven-snapshot-local/com/fis/IBS/srm/mod
-      artifactory_filename   is: opstopsrm
-      artifactory_filetype   is: ear
-      jboss_app_name         is: MD_Desktop_SRM_Dev_Sys
-      jboss_server           is: vlmazibsdm.fisdev.local
-      jboss_node_name        is: MD_Desktop_SRM_Dev_Sys
-      jboss_cmd_dir          is: /tmp/test/
-      ```
-
-27. **Execute JBoss bounce**
-    - Executing a JBoss server bounce using a Perl wrapper script:
-      ```plaintext
-      --- cmd is:/bin/scp -q -o StrictHostKeyChecking=no /home/jenkins/workspace/.../ibs_jboss_wrapper.pl jbadmin@vlmazibsdm.fisdev.local:/tmp/test/
-      --- cmd is:/bin/ssh -q -o StrictHostKeyChecking=no jbadmin@vlmazibsdm.fisdev.local chmod 755 /tmp/test//ibs_jboss_wrapper.pl
-      --- cmd is:/bin/ssh -q -o StrictHostKeyChecking=no jbadmin@vlmazibsdm.fisdev.local perl /tmp/test//ibs_jboss_wrapper.pl bounce /opt/JbossEAP/7.4/j
-
