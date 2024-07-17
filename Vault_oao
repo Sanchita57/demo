@@ -1,0 +1,476 @@
+#!/bin/bash
+
+ workingDirectory="<+stage.variables.workingDirectory>"
+ app_name="<+stage.variables.app_name>"
+
+ d1_ent_core_url="<+stage.variables.d1_ent_core_url>"
+ d1_ent_core_user="<+stage.variables.d1_ent_core_user>"
+ d1_ent_core_pass="<+stage.variables.d1_ent_core_pass>"
+ d1_ent_branch_to_checkout="<+stage.variables.d1_ent_branch_to_checkout>"
+ d1_ent_folder_name=$(basename "$d1_ent_core_url" .git)
+
+
+ doe_core_url="<+stage.variables.doe_core_url>"
+ doe_core_user="<+stage.variables.doe_core_user>"
+ doe_core_pass="<+stage.variables.doe_core_pass>"
+ doe_branch_to_checkout="<+stage.variables.doe_branch_to_checkout>"
+ doe_folder_name="$(basename "$doe_core_url" .git)"
+ doe_repo_owner="<+stage.variables.doe_repo_owner>"
+
+ echo CoreChartVersion="<+stage.variables.CoreChartVersion>"
+ env_chart_path="<+stage.variables.env_chart_path>"
+ jira_ticket="<+stage.variables.jira_ticket>"
+ environment="<+stage.variables.environment>"
+ approvers="<+stage.variables.approvers_eid>"
+ branch_to_create="$jira_ticket-$environment"
+
+ send_mail="<+stage.variables.send_mail>"
+ SMTPServer="<+stage.variables.smtp_server>"
+ SMTPPort="<+stage.variables.smtp_port>"
+EmailFrom="<+stage.variables.EmailFrom>"
+EmailTo="<+stage.variables.EmailTo>"
+EmailSubject="<+stage.variables.EmailSubject>"
+wait_time="<+stage.variables.wait_time>"
+
+mail_cert="<+stage.variables.mail_cert>"
+svc_account="<+stage.variables.svc_account>"
+svc_password="<+stage.variables.svc_password>"
+
+triggeredByEmail="<+stage.variables.triggeredByEmail>"
+triggeredByUser="<+stage.variables.triggeredByUser>"
+
+BodyFile="/tmp/mail_body.txt"
+DiffFile="/tmp/diff_body.txt"
+CertFile="/tmp/mail_cert"
+
+diff_files=()
+missing_in_d1_beb=()
+missing_in_doe=()
+
+echo "Write Cert to File"
+echo "$mail_cert" | base64 -d  > $CertFile
+
+rm -rf "$workingDirectory"
+mkdir -p "$workingDirectory"
+touch $DiffFile
+touch $BodyFile
+
+clone_repo() {
+  local repo_url=$1
+  local repo_user=$2
+  local repo_pass=$3
+  local branch=$4
+  local folder_name=$5
+
+  cd "$workingDirectory"
+
+  echo "Cloning $branch branch of $folder_name repo"
+
+  if git clone https://"$repo_user":"$repo_pass"@"$repo_url" -b "$branch" "$folder_name"; then
+    echo "Cloning $folder_name repo succeeded."
+    cd $folder_name && git config user.email "$triggeredByEmail" && git config user.name "$triggeredByUser"
+  else
+    echo "Cloning $folder_name repo failed."
+    exit 1
+  fi
+
+  cd "$workingDirectory"
+}
+
+echo "----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx -----"
+clone_repo "$d1_ent_core_url" "$d1_ent_core_user" "$d1_ent_core_pass" "$d1_ent_branch_to_checkout" "$d1_ent_folder_name"
+echo "----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx -----"
+clone_repo "$doe_core_url" "$doe_core_user" "$doe_core_pass" "$doe_branch_to_checkout" "$doe_folder_name"
+
+compare_files() {
+  local dir1="$workingDirectory/$d1_ent_folder_name/$env_chart_path"
+  local dir2="$workingDirectory/$doe_folder_name/$env_chart_path"
+
+  # Check if directories exist
+  if [[ ! -d "$dir1" || ! -d "$dir2" ]]; then
+    echo "Error: One or both directories do not exist or are not accessible." >&2
+    return 1
+  fi
+
+  OLDIFS="$IFS"
+  local IFS=$'\n'
+  mapfile -t d1_ent_files < <(cd "$dir1" && find "$app_name" -type f -print0 | sort -z | xargs -0 -n1 printf "%s\n")
+  mapfile -t doe_files < <(cd "$dir2" && find "$app_name" -type f -print0 | sort -z | xargs -0 -n1 printf "%s\n")
+
+  declare -A d1_ent_set doe_set
+  for file in "${d1_ent_files[@]}"; do d1_ent_set["$file"]=1; done
+  for file in "${doe_files[@]}"; do doe_set["$file"]=1; done
+
+  #Find missing files
+  for file in "${d1_ent_files[@]}"; do
+    [[ -z ${doe_set["$file"]} ]] && missing_in_doe+=("$file")
+  done
+  for file in "${doe_files[@]}"; do
+    [[ -z ${d1_ent_set["$file"]} ]] && missing_in_d1_ent+=("$file")
+  done
+
+  echo "<html><body>" > $BodyFile
+  echo "<h2>File Comparison Report</h2>" >> $BodyFile
+  echo "<table border='1' style='border-collapse: collapse;'>" >> $BodyFile
+  echo "<tr><th>File</th><th>Status</th></tr>" >> $BodyFile
+
+  echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+
+  for file in "${missing_in_d1_ent[@]}"; do
+    echo "<tr><td>${file}</td><td class='missing'>Missing in ${d1_ent_folder_name}</td></tr>" >> "$BodyFile"
+    echo "File missing in ${d1_ent_folder_name}: ${file}" >&2
+  done
+
+  for file in "${missing_in_doe[@]}"; do
+    echo "<tr><td>${file}</td><td class='missing'>Missing in ${doe_folder_name}</td></tr>" >> "$BodyFile"
+    echo "File missing in ${doe_folder_name}: ${file}" >&2
+  done
+
+  echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+
+  for file in "${d1_ent_files[@]}"; do
+    if [[ -n ${doe_set["$file"]} ]]; then
+      file1="$dir1/$file"
+      file2="$dir2/$file"
+
+      echo "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"
+
+      echo "Comparing: ${file}" >&2
+
+      case "$file" in
+        *.yaml|*.yml) compare_yaml_files "$file1" "$file2" "$file" "$d1_ent_folder_name" "$doe_folder_name" ;;
+        *.xml) compare_xml_files "$file1" "$file2" "$file" "$d1_ent_folder_name" "$doe_folder_name" ;;
+        *) compare_binary_files "$file1" "$file2" "$file" "$d1_ent_folder_name" "$doe_folder_name" ;;
+      esac
+    fi
+  done
+
+  IFS="$OLDIFS"
+  echo "</table></body></html>" >> "$BodyFile"
+}
+
+compare_yaml_files() {
+  local file1="$1"
+  local file2="$2"
+  local filepath="$3"
+  local folder1="$4"
+  local folder2="$5"
+  local file1_name=$(basename "$file1")
+  local file2_name=$(basename "$file2")
+  local status="SAME"
+  local color="green"
+
+  echo "Comparing YAML $file1_name from $folder1 and $folder2"
+
+  is_helm_template() {
+    grep -q '{{' "$1"
+  }
+
+  compare_yaml() {
+    local file1="$1"
+    local file2="$2"
+    local folder1="$3"
+    local folder2="$4"
+    local different=0
+
+    local python_output
+
+    python_output=$(python /tmp/yaml_diff.py "$file1" "$file2" "$folder1" "$folder2")
+
+    if [[ "$python_output" == *"The YAML files are logically equivalent."* ]]; then
+      echo "No differences found"
+    else
+      echo "Comparing $file1_name from $folder1 and $folder2"
+      echo "Differences found:"
+      echo "$python_output"
+      different=1
+      status="NOT SAME"
+      color="red"
+      diff_files+=("$filepath")
+
+      echo "Comparing $file1_name from $folder1 and $folder2" >> $DiffFile
+      echo "Differences found:" >> $DiffFile
+      echo '<pre>' >> $DiffFile
+      cat /tmp/yaml_report.html >> $DiffFile
+      echo '</pre>' >> $DiffFile
+    fi
+    return $different
+  }
+
+  if is_helm_template "$file1" || is_helm_template "$file2"; then
+    echo "One or both files are Helm templates. Using diff to compare."
+    local diff_output=$(diff -Z -B "$file1" "$file2")
+    if [ -z "$diff_output" ]; then
+      echo "No differences found"
+    else
+      echo "Comparing $file1_name from $folder1 and $folder2" >> $DiffFile
+      echo "Differences found in $file1:" >> $DiffFile
+      echo "$diff_output" >> $DiffFile
+
+      echo "Differences found:"
+      echo "$diff_output"
+      status="NOT SAME"
+      color="red"
+    fi
+  else
+    if ! compare_yaml "$file1" "$file2" "$folder1" "$folder2" ; then
+      status="NOT SAME"
+      color="red"
+    fi
+  fi
+
+  echo "<tr><td>$filepath</td><td style='color: $color;'>$status</td></tr>" >> $BodyFile
+}
+
+
+compare_xml_files() {
+  local file1="$1"
+  local file2="$2"
+  local filepath="$3"
+  local folder1="$4"
+  local folder2="$5"
+  local file1_name=$(basename "$file1")
+  local file2_name=$(basename "$file2")
+  local status="SAME"
+  local color="green"
+
+  echo "Comparing XML $file1_name from $folder1 and $folder2"
+
+  local python_output
+  python_output=$(python /tmp/xml_diff.py "$file1" "$file2" "$folder1" "$folder2")
+
+  if [[ "$python_output" == *"The XML files are logically equivalent."* ]]; then
+    echo "No differences found"
+  else
+    echo "Comparing $file1_name from $folder1 and $folder2"
+    echo "Differences found:"
+    echo "$python_output"
+    status="NOT SAME"
+    color="red"
+    diff_files+=("$filepath")
+
+    echo "Comparing $file1_name from $folder1 and $folder2" >> $DiffFile
+    echo "Differences found:" >> $DiffFile
+    echo '<pre>' >> $DiffFile
+    cat /tmp/xml_report.html >> $DiffFile
+    echo '</pre>' >> $DiffFile
+  fi
+
+  echo "<tr><td>$filepath</td><td style='color: $color;'>$status</td></tr>" >> $BodyFile
+}
+
+compare_binary_files() {
+  local file1="$1"
+  local file2="$2"
+  local filepath="$3"
+  local folder1="$4"
+  local folder2="$5"
+  local file1_name=$(basename "$file1")
+  local file2_name=$(basename "$file2")
+  local status="SAME"
+  local color="green"
+
+  echo "Comparing Binary Files $file1_name from $folder1 and $folder2"
+
+  if ! cmp -s "$file1" "$file2"; then
+    echo "File $file1_name differs in $folder1 and $folder2" >> $DiffFile
+    echo "Files differ"
+    status="NOT SAME"
+    color="red"
+    diff_files+=("$filepath")
+  else
+    echo "No differences found"
+  fi
+
+  echo "<tr><td>$filepath</td><td style='color: $color;'>$status</td></tr>" >> $BodyFile
+}
+
+function sendMail () {
+  if [[ $send_mail =~ ^([yY][eE][sS])$ ]] ; then
+    echo "Sending mail"
+    email_body=$(cat "$BodyFile")
+    if [ -s "$DiffFile" ]; then
+      email_diff=$(sed -e 's/MISSING/<span style="color: red;">MISSING<\/span>/g' "$DiffFile")
+      echo "Processed content stored in email_diff:"
+    else
+      echo "DiffFile is empty or does not exist."
+    fi
+    IFS=',' read -ra email_recipients <<< "$EmailTo"
+    email_payload=$(cat <<EOF
+EHLO localhost
+AUTH LOGIN
+$(echo -n "$svc_account" | base64)
+$(echo -n "$svc_password" | base64)
+MAIL FROM: $EmailFrom
+$(for recipient in "${email_recipients[@]}"; do
+  echo "RCPT TO: $recipient"
+done)
+DATA
+Subject: $EmailSubject
+Content-Type: text/html; charset=UTF-8
+<html>
+<body>
+$email_body
+<br><br>
+<h3>File Differences</h3>
+<pre>$email_diff</pre>
+</body>
+</html>
+
+.
+QUIT
+EOF
+)
+    echo "$email_payload" | openssl s_client -starttls smtp -crlf -quiet -connect $SMTPServer:$SMTPPort -CAfile "$CertFile" 2>&1
+
+    if [ $? -ne 0 ]; then
+      echo "Failed to send mail"
+    else
+      echo "Mail sent successfully"
+    fi
+  fi
+}
+
+copy_files() {
+  echo "Copying files that are different and missing in $d1_ent_folder_name to $doe_folder_name"
+
+  local source_dir="$workingDirectory/$d1_ent_folder_name/$env_chart_path"
+  local dest_dir="$workingDirectory/$doe_folder_name/$env_chart_path"
+
+  copy_single_file() {
+    local src="$1"
+    local dst="$2"
+    if [[ ! -f "$src" ]]; then
+      echo "Error: Source file does not exist: $src" >&2
+      return 1
+    fi
+    if ! mkdir -p "$(dirname "$dst")"; then
+      echo "Error: Unable to create destination directory for: $dst" >&2
+      return 1
+    fi
+    if ! cp "$src" "$dst"; then
+      echo "Error: Failed to copy file from $src to $dst" >&2
+      return 1
+    fi
+    echo "Copied: $src to $dst"
+  }
+
+  if [[ ${#diff_files[@]} -gt 0 ]]; then
+    for file in "${diff_files[@]}"; do
+      copy_single_file "$source_dir/$file" "$dest_dir/$file"
+    done
+  fi
+
+  # Copy missing files
+  if [[ ${#missing_in_doe[@]} -gt 0 ]]; then
+    for file in "${missing_in_doe[@]}"; do
+      copy_single_file "$source_dir/$file" "$dest_dir/$file"
+    done
+  fi
+}
+
+replace_placeholders() {
+  local d1-CoreChartVersion=$1
+  echo "Pwd - $(pwd)"
+  find "$workingDirectory/$doe_folder_name/$env_chart_path/$app_name" -type f -name Chart.yaml -exec sed -i "s/#{chartVersion}/$d1-CoreChartVersion/g" {} +
+  find "$workingDirectory/$doe_folder_name/$env_chart_path/$app_name" -type f -name Chart.yaml -exec sed -i "s/#{umbrellaChartVersion}/d1-CoreChartVersion/g" {} +
+  echo "Updated '$d1-CoreChartVersion' in Chart.yaml."
+  echo ""
+  cat "$workingDirectory/$doe_folder_name/$env_chart_path/$app_name/Chart.yaml"
+  echo ""
+}
+
+create_branch_pull_request() {
+  local branch_name=$1
+  local approvers=$2
+  local bitbucket_username=$3
+  local bitbucket_password=$4
+  local repo_owner=$5
+  local repo_slug=$6  
+  local pr_title="$jira_ticket"
+  local pr_description="$d1-CoreChartVersion"
+
+
+  cd "$workingDirectory/$doe_folder_name" || { echo "Failed to change directory"; exit 1; }
+
+  echo "Creating branch - $branch_name"
+  git checkout -b $branch_name && echo "Branch '$branch_name' created." || echo "Branch already exists ?"
+
+  echo "Git status"
+  git status
+
+  echo "Adding files"
+  git add .
+
+  echo "Committing changes"
+  git commit -m "Jira Ticket: $jira_ticket. Update chart version to $d1-CoreChartVersion" || echo "Did not commit. Probably nothing to commit ?"
+
+  echo "Pushing changes"
+  git push -u origin $branch_name --force || { echo "Failed to push changes"; exit 1; }
+
+  echo "Creating a Pull-Request"
+  local reviewers_json=$(echo "$approvers" | jq -c -R 'split(",") | map({user: {name: .}})' | tr -d '\n')
+  echo "Reviewers JSON: $reviewers_json"
+
+  local pr_response=$(curl -s -X POST -u "$bitbucket_username:$bitbucket_password" \
+    "https://bitbucket.fis.dev/rest/api/latest/projects/$repo_owner/repos/$repo_slug/pull-requests" \
+    -H "Content-Type: application/json" \
+    -d "{
+      \"title\": \"$pr_title\",
+      \"description\": \"$pr_description\",
+      \"state\": \"OPEN\",
+      \"open\": true,
+      \"closed\": false,
+      \"fromRef\": {
+        \"id\": \"refs/heads/$branch_name\",
+        \"repository\": {
+          \"slug\": \"$repo_slug\",
+          \"name\": null,
+          \"project\": {
+            \"key\": \"$repo_owner\"
+          }
+        }
+      },
+      \"toRef\": {
+        \"id\": \"refs/heads/master\",
+        \"repository\": {
+          \"slug\": \"$repo_slug\",
+          \"name\": null,
+          \"project\": {
+            \"key\": \"$repo_owner\"
+          }
+        }
+      },
+      \"reviewers\": $reviewers_json
+    }")
+
+  if echo "$pr_response" | jq -e '.id' > /dev/null 2>&1; then
+    local pr_id=$(echo "$pr_response" | jq -r '.id')
+    echo "Pull request created successfully. PR ID: $pr_id"
+    echo "Pull request created to merge '$branch_name' into 'master' with reviewers '$approvers'."
+  elif echo "$pr_response" | jq -e '.errors[0].exceptionName == "com.atlassian.bitbucket.pull.DuplicatePullRequestException"' > /dev/null 2>&1; then
+    echo "A pull request already exists for this branch."
+    local existing_pr_id=$(echo "$pr_response" | jq -r '.errors[0].existingPullRequest.id')
+    echo "Existing Pull Request ID: $existing_pr_id"
+  else
+    echo "Failed to create pull request. Server response:"
+    echo "$pr_response" | jq '.'
+    exit 1
+  fi
+}
+
+echo "----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx -----"
+compare_files
+echo "----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx -----"
+sendMail
+echo "----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx -----"
+
+cd "$workingDirectory/$doe_folder_name"
+
+echo "----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx -----"
+copy_files
+echo "----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx -----"
+replace_placeholders "$d1-CoreChartVersion"
+echo "----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx -----"
+create_branch_pull_request "$branch_to_create" "$approvers" "$doe_core_user" "$doe_core_pass" "$doe_repo_owner" "$doe_folder_name"
+echo "----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx ----- xxxx -----"
