@@ -19,358 +19,201 @@ https://medium.com/geekculture/integrate-hashicorp-vault-with-cicd-tool-jenkins-
 
 
 
-Loading library jenkins-pipeline-deploy-library@master
-Attempting to resolve master from remote references...
- > git --version # timeout=30
- > git --version # 'git version 2.22.0'
-using GIT_ASKPASS to set credentials cm-credentials-id credentials
- > git ls-remote -h -- https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git # timeout=30
-Found match: refs/heads/master revision 4bc3c06690b120b72af2a9cec423e33273d09f5c
-The recommended git tool is: NONE
-using credential cm-credentials-id
- > git rev-parse --resolve-git-dir /data2/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop@libs/f5e7f94a0feb41ae0e1f84d6c66d27b24ef0af5bf59db11cdacebd1b167ff23d/.git # timeout=30
-Fetching changes from the remote Git repository
- > git config remote.origin.url https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git # timeout=30
-Fetching without tags
-Fetching upstream changes from https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git
- > git --version # timeout=30
- > git --version # 'git version 2.22.0'
-using GIT_ASKPASS to set credentials cm-credentials-id credentials
- > git fetch --no-tags --force --progress -- https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git +refs/heads/*:refs/remotes/origin/* # timeout=30
-Checking out Revision 4bc3c06690b120b72af2a9cec423e33273d09f5c (master)
- > git config core.sparsecheckout # timeout=30
- > git checkout -f 4bc3c06690b120b72af2a9cec423e33273d09f5c # timeout=30
-Commit message: "prod changes masibs"
-[Pipeline] Start of Pipeline
-[Pipeline] node
-Still waiting to schedule task
-Waiting for next available executor on ‘jdk8’
-Running on bnk-jdk-slave1-41bf7c26 in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop
-[Pipeline] {
-[Pipeline] stage
-[Pipeline] { (deploy)
-[Pipeline] sshagent
-[ssh-agent] Using credentials jenkins
-[ssh-agent] Looking for ssh-agent implementation...
-[ssh-agent]   Exec ssh-agent (binary ssh-agent on a remote machine)
-$ ssh-agent
-SSH_AUTH_SOCK=/tmp/ssh-UH3jw1bGMw8c/agent.13691
-SSH_AGENT_PID=13700
-Running ssh-add (command line suppressed)
-Identity added: /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop@tmp/private_key_5294313437408370748.key (/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop@tmp/private_key_5294313437408370748.key)
-[ssh-agent] Started.
-[Pipeline] {
-[Pipeline] sh
-+ rm -rf '/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/*'
-[Pipeline] dir
-Running in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_deploy_migrate_scripts
-[Pipeline] {
-[Pipeline] withCredentials
-Masking supported pattern matches of $USERNAME or $PASSWORD
-[Pipeline] {
-[Pipeline] sh
-Warning: A secret was passed to "sh" using Groovy String interpolation, which is insecure.
-		 Affected argument(s) used the following variable(s): [PASSWORD, USERNAME]
-		 See https://jenkins.io/redirect/groovy-string-interpolation for details.
-+ curl --user ****:**** -s -k -f -o jenkins_deploy_migrate_scripts.zip https://artifactory.fis.dev/artifactory/harvest-maven-snapshot-local/Jenkins_deploy_migrate_scripts/jenkins_deploy_migrate_scripts/0.1.0-SNAPSHOT/jenkins_deploy_migrate_scripts-0.1.0-SNAPSHOT.zip
-[Pipeline] sh
-+ unzip -q jenkins_deploy_migrate_scripts.zip
-[Pipeline] }
-[Pipeline] // withCredentials
-[Pipeline] }
-[Pipeline] // dir
-[Pipeline] dir
-Running in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_deploy_migrate_scripts/src
-[Pipeline] {
-[Pipeline] withCredentials
-Masking supported pattern matches of $USERNAME or $PASSWORD
-[Pipeline] {
-[Pipeline] sh
-Warning: A secret was passed to "sh" using Groovy String interpolation, which is insecure.
-		 Affected argument(s) used the following variable(s): [PASSWORD, USERNAME]
-		 See https://jenkins.io/redirect/groovy-string-interpolation for details.
-+ /usr/bin/perl deploy_migrate_001_bnk.pl **** ****
-----------------------------------------------------------------------------
----
---- JOB INPUTS
----
-----------------------------------------------------------------------------
-
-job_name                   is:IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop
-artifactory_version_number is:May2024.1R-SNAPSHOT
-ticket_number              is:
-execute_type               is:execute
-ws_operation               is:
-jb_operation               is:
-app_group                  is:IBSSRM
-env                        is:Development
-deploy_type                is:migrate
-app_name                   is:DevUnit_Desktop
-ini_name                   is:IBSSRM-Development-migrate-DevUnit_Desktop
-----------------------------------------------------------------------------
----
---- Extract application control files from Artifactory
----
-----------------------------------------------------------------------------
-
---- cmd is:curl --user ****:**** -s -k -f -o /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_application_control_files/IBSSRM.zip https://artifactory.fis.dev/artifactory/harvest-maven-snapshot-local/Jenkins_application_control_files/IBSSRM/0.1.0-SNAPSHOT/IBSSRM-0.1.0-SNAPSHOT.zip
-----------------------------------------------------------------------------
----
---- Unzip application control files
----
-----------------------------------------------------------------------------
-
---- cmd is:unzip -q /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_application_control_files/IBSSRM.zip -d /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_application_control_files
-----------------------------------------------------------------------------
----
---- Execute  migration
----
-----------------------------------------------------------------------------
-
-ini_file is:/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_application_control_files/src/IBSSRM-Development-migrate-DevUnit_Desktop.ini
-----------------------------------------------------------------------------
----
---- Read read application control file:/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_application_control_files/src/IBSSRM-Development-migrate-DevUnit_Desktop.ini
----
-----------------------------------------------------------------------------
-
-artifactory_path       is: https://artifactory.fis.dev/artifactory/ibssrm-maven-snapshot-local/com/fis/IBS/srm
-artifactory_filename   is: properties
-artifactory_filetype   is: jar
-artifactory_classifier is: unit_dev
-target_servers        are: vlcapdccibsapp1.fisdev.local
-target_dir             is: /application/SRM_Desktop/EnvJars
-target_owner           is: wasadmin
-target_group           is: wasadm
-target_perms          are: 755
-clean_target_dir       is: no
-uncompress             is: no
-update_target_dir      is: yes
-set_target_dir_perms   is: yes
-scripts_to_execute    are: none
-----------------------------------------------------------------------------
----
---- Extract application migration file from Artifactory
----
-----------------------------------------------------------------------------
-
---- cmd is:curl --user ****:**** -s -k -f -o /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/application_data/properties.jar https://artifactory.fis.dev/artifactory/ibssrm-maven-snapshot-local/com/fis/IBS/srm/properties/May2024.1R-SNAPSHOT/properties-May2024.1R-SNAPSHOT-unit_dev.jar
-----------------------------------------------------------------------------
----
---- Process migration to target_machine vlcapdccibsapp1.fisdev.local
----
-----------------------------------------------------------------------------
-
---- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local mkdir -p /application/SRM_Desktop/EnvJars/tmp
---- Copy application file to tmp dir /application/SRM_Desktop/EnvJars/tmp
---- cmd is:scp -q -o StrictHostKeyChecking=no /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/application_data/properties.jar wasadmin@vlcapdccibsapp1.fisdev.local:/application/SRM_Desktop/EnvJars/tmp
---- set ownership, group and file permissions on directory /application/SRM_Desktop/EnvJars/tmp
---- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local chown -R wasadmin:wasadm /application/SRM_Desktop/EnvJars/tmp
---- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local chmod -R 755 /application/SRM_Desktop/EnvJars/tmp
---- Copy files to target directory /application/SRM_Desktop/EnvJars
---- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local cp -r /application/SRM_Desktop/EnvJars/tmp/* /application/SRM_Desktop/EnvJars
---- set ownership, group and file permissions on directory /application/SRM_Desktop/EnvJars
---- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local chown -R wasadmin:wasadm /application/SRM_Desktop/EnvJars
---- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local chmod -R 755 /application/SRM_Desktop/EnvJars
---- Remove tmp directory /application/SRM_Desktop/EnvJars/tmp
---- cmd is:ssh -q -o StrictHostKeyChecking=no wasadmin@vlcapdccibsapp1.fisdev.local rm -rf /application/SRM_Desktop/EnvJars/tmp
-----------------------------------------------------------------------------
----
---- Migration completed to all machines - please review log
----
-----------------------------------------------------------------------------
-
-[Pipeline] }
-[Pipeline] // withCredentials
-[Pipeline] }
-[Pipeline] // dir
-[Pipeline] }
-$ ssh-agent -k
-unset SSH_AUTH_SOCK;
-unset SSH_AGENT_PID;
-echo Agent pid 13700 killed;
-[ssh-agent] Stopped.
-[Pipeline] // sshagent
-[Pipeline] }
-[Pipeline] // stage
-[Pipeline] }
-[Pipeline] // node
-[Pipeline] End of Pipeline
-job/IBSSRM-Development/job/IBSSRM-Development-migrate-DevUnit_Desktop/34/
-Finished: SUCCESS
-
-
-@@@@@@
-detail explaination
-@@@@@@
-### Detailed Explanation of Jenkins Job Console Output with Reasons
-
-This detailed breakdown includes reasons and motivations behind each step in the Jenkins job console output, providing a comprehensive understanding of the process.
-
-#### Library Loading
-1. **Loading library `jenkins-pipeline-deploy-library@master`**
-   - **Reason:** Jenkins uses shared libraries to encapsulate reusable code. Loading the library allows the pipeline to access predefined functions and resources from the `master` branch of the `jenkins-pipeline-deploy-library`.
-
-#### Git Operations
-2. **Attempting to resolve master from remote references...**
-   - **Reason:** Jenkins needs to ensure it is working with the correct branch (`master`) from the remote Git repository to fetch the latest code and configurations.
-
-3. **Git version check**
-   - **Reason:** Checking the Git version ensures compatibility with the repository operations. The command verifies the installed Git version:
-     ```sh
-     git --version # 'git version 2.22.0'
-     ```
-
-4. **Setting credentials**
-   - **Reason:** Credentials (`cm-credentials-id`) are required to authenticate and access the private Git repository securely:
-     ```sh
-     using GIT_ASKPASS to set credentials cm-credentials-id credentials
-     ```
-
-5. **Listing remote references**
-   - **Reason:** Jenkins lists remote references to locate the `master` branch, which contains the latest codebase to be used in the pipeline:
-     ```sh
-     git ls-remote -h -- https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git # timeout=30
-     ```
-
-6. **Match found for master branch**
-   - **Reason:** Confirming that the `master` branch exists and fetching the latest commit hash (`4bc3c06690b120b72af2a9cec423e33273d09f5c`) ensures that the pipeline uses the most recent code:
-     ```sh
-     Found match: refs/heads/master revision 4bc3c06690b120b72af2a9cec423e33273d09f5c
-     ```
-
-7. **Recommended git tool**
-   - **Reason:** Jenkins might recommend specific tools or versions for optimal performance or compatibility. In this case, it indicates `NONE` as no specific tool is recommended.
-
-8. **Git operations in workspace**
-   - **Reason:** These steps prepare the workspace by configuring the remote URL, fetching changes, and checking out the specified commit. This ensures that the pipeline operates on the correct codebase:
-     ```sh
-     using credential cm-credentials-id
-     git rev-parse --resolve-git-dir /data2/jenkins/workspace/.../.git # timeout=30
-     Fetching changes from the remote Git repository
-     git config remote.origin.url https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git # timeout=30
-     Fetching without tags
-     git fetch --no-tags --force --progress -- https://bam-build@bitbucket.fis.dev/scm/jdm/deploylib.git +refs/heads/*:refs/remotes/origin/* # timeout=30
-     Checking out Revision 4bc3c06690b120b72af2a9cec423e33273d09f5c (master)
-     git config core.sparsecheckout # timeout=30
-     git checkout -f 4bc3c06690b120b72af2a9cec423e33273d09f5c # timeout=30
-     ```
-
-9. **Commit message**
-   - **Reason:** Displaying the commit message (`"prod changes masibs"`) provides context for the changes in the checked-out code:
-     ```sh
-     Commit message: "prod changes masibs"
-     ```
-
-#### Pipeline Execution
-10. **Pipeline start**
-    - **Reason:** Indicates the beginning of the pipeline execution, signaling that subsequent steps will follow the defined pipeline stages:
-      ```sh
-      [Pipeline] Start of Pipeline
-      ```
-
-11. **Node block**
-    - **Reason:** Specifies the agent (`jdk8`) where the pipeline will execute, providing control over the environment and resources used:
-      ```sh
-      [Pipeline] node
-      Still waiting to schedule task
-      Waiting for next available executor on ‘jdk8’
-      Running on bnk-jdk-slave1-41bf7c26 in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop
-      ```
-
-12. **Stage: Deploy**
-    - **Reason:** Entering the `deploy` stage organizes the pipeline into logical phases, making it easier to manage and understand the deployment process:
-      ```sh
-      [Pipeline] stage
-      [Pipeline] { (deploy)
-      ```
-
-#### SSH Agent Setup
-13. **SSH Agent configuration**
-    - **Reason:** Configuring the SSH agent with `jenkins` credentials allows secure, automated interactions with remote servers for deployment tasks:
-      ```sh
-      [Pipeline] sshagent
-      [ssh-agent] Using credentials jenkins
-      ```
-
-14. **SSH agent implementation and setup**
-    - **Reason:** Initializing and starting the SSH agent securely manages SSH keys, enabling secure command execution on remote servers:
-      ```sh
-      [ssh-agent] Looking for ssh-agent implementation...
-      [ssh-agent]   Exec ssh-agent (binary ssh-agent on a remote machine)
-      $ ssh-agent
-      SSH_AUTH_SOCK=/tmp/ssh-UH3jw1bGMw8c/agent.13691
-      SSH_AGENT_PID=13700
-      Running ssh-add (command line suppressed)
-      Identity added: /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop@tmp/private_key_5294313437408370748.key (/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop@tmp/private_key_5294313437408370748.key)
-      [ssh-agent] Started.
-      ```
-
-#### Shell Commands
-15. **Cleaning workspace directories**
-    - **Reason:** Removing specific directories ensures a clean workspace, preventing conflicts with previous builds or leftover files:
-      ```sh
-      [Pipeline] sh
-      + rm -rf '/home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/*'
-      ```
-
-16. **Directory change**
-    - **Reason:** Navigating to the deploy scripts directory organizes and isolates the execution of deployment scripts:
-      ```sh
-      [Pipeline] dir
-      Running in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_deploy_migrate_scripts
-      ```
-
-17. **Using credentials for secure operations**
-    - **Reason:** Setting up environment variables securely ensures sensitive information like usernames and passwords are protected during script execution:
-      ```sh
-      [Pipeline] withCredentials
-      Masking supported pattern matches of $USERNAME or $PASSWORD
-      ```
-
-18. **Download deploy scripts**
-    - **Reason:** Downloading deployment scripts from Artifactory ensures that the latest, version-controlled scripts are used in the deployment process:
-      ```sh
-      [Pipeline] sh
-      Warning: A secret was passed to "sh" using Groovy String interpolation, which is insecure.
-       Affected argument(s) used the following variable(s): [PASSWORD, USERNAME]
-       See https://jenkins.io/redirect/groovy-string-interpolation for details.
-      + curl --user ****:**** -s -k -f -o jenkins_deploy_migrate_scripts.zip https://artifactory.fis.dev/artifactory/harvest-maven-snapshot-local/Jenkins_deploy_migrate_scripts/jenkins_deploy_migrate_scripts/0.1.0-SNAPSHOT/jenkins_deploy_migrate_scripts-0.1.0-SNAPSHOT.zip
-      ```
-
-19. **Unzipping downloaded scripts**
-    - **Reason:** Extracting the downloaded ZIP file prepares the scripts for execution, making them accessible in the pipeline workspace:
-      ```sh
-      [Pipeline] sh
-      + unzip -q jenkins_deploy_migrate_scripts.zip
-      ```
-
-20. **Navigating to src directory**
-    - **Reason:** Moving to the source directory ensures the execution environment is correctly set up for running the Perl scripts:
-      ```sh
-      [Pipeline] dir
-      Running in /home/jenkins/workspace/IBSSRM-Development/IBSSRM-Development-migrate-DevUnit_Desktop/jenkins_deploy_migrate_scripts/src
-      ```
-
-21. **Using credentials for secure operations**
-    - **Reason:** Setting up environment variables securely ensures sensitive information like usernames and passwords are protected during script execution:
-      ```sh
-      [Pipeline] withCredentials
-      Masking supported pattern matches of $USERNAME or $PASSWORD
-      ```
-
-22. **Running the Perl deployment script**
-    - **Reason:** Executing a Perl script with sensitive credentials automates deployment tasks, leveraging scripts tailored for specific deployment steps:
-      ```sh
-      [Pipeline] sh
-      Warning: A secret was passed to "sh" using Groovy String interpolation, which is insecure.
-       Affected argument(s) used the following variable(s): [PASSWORD, USERNAME]
-       See https://jenkins.io/redirect/groovy-string-interpolation for details.
-      + /usr/bin/perl deploy_migrate_001_bnk.pl **** ****
-      ```
-
-#### Perl Script Output
-23. **Script execution details**
-    - **Reason:** Provides detailed output from the Perl script to track the progress and verify the correct parameters and inputs are being used:
-     
-
+ Started by upstream project "IdP/NB-Deployments/Deployment_Dynascan_Oracle_IdP_Plain_NB_Admin2" build number 976
+ originally caused by:
+  Started by upstream project "IdP/NB-Deployments/Deployment_Dynascan_Oracle_IdP_Plain_NB_Admin" build number 981
+  originally caused by:
+   Started by upstream project "IdP/OnDemand-Deployment/bitbucket-clone-with-jenkins" build number 1115
+   originally caused by:
+    Started by upstream project "IdP/Build/Trunk-NightBuild" build number 1220
+    originally caused by:
+     Started by timer
+     Started by user Kirti Jeurkar (e1077363)
+     Started by upstream project "IdP/Build/Trunk-NightBuild" build number 1219
+     originally caused by:
+      Started by timer
+ Running as SYSTEM
+ [EnvInject] - Loading node environment variables.
+ Building remotely on vlmazxidpbuild01.fisdev.local (IdPbuild-Dev-QA) in workspace /data/workspace/workspace/IdP/NB-Deployments/Deployment_Dynascan_Oracle_IdP_Plain_NB_DH
+ [EnvInject] - Executing scripts and injecting environment variables after the SCM step.
+ [EnvInject] - Injecting as environment variables the properties content 
+ ANT_OPTS="-Djdk.util.jar.enableMultiRelease=force"
+ 
+ [EnvInject] - Variables injected successfully.
+ [Deployment_Dynascan_Oracle_IdP_Plain_NB_DH] $ /bin/sh -xe /tmp/jenkins7613768205157773236.sh
+ + ssh -o StrictHostKeyChecking=no svc-idpnb@10.7.185.167 '. .bash_profile; sh -x /data/workspace/build.scripts/nightlybuild_scripts/deploy_az/tomcat_dynascan/remoteScript_TmMysql_dh.sh 1220 5.8.0 IdPRI Install; sleep 60'
+ *******************************************************************************
+ **                                                                           **
+ **  SECURITY NOTICE:                                                         **
+ **  This computer system contains sensitive client information managed by    **
+ **  FIS and is intended for official and other authorized use only.          **
+ **  Unauthorized access or use of this system may subject violators to       **
+ **  administrative action, civil, and/or criminal prosecution under the      **
+ **  United States Criminal Code (Title 18 U.S.C. \247 1030).                 **
+ **  All information on this computer system may be monitored, intercepted,   **
+ **  recorded, read, copied, or captured and disclosed by and to authorized   **
+ **  personnel for official purposes, including criminal prosecution.         **
+ **  You have no expectations of privacy using this system. Any authorized    **
+ **  or unauthorized use of this computer system signifies consent to and     **
+ **  compliance with FIS policies and those security/privacy compliance       **
+ **  regulations required by external governing bodies and these terms.       **
+ **                                                                           **
+ **  By logging into this server, you agree to accept these terms.            **
+ *******************************************************************************
+ + TOMCAT_HOME=/data/tomcat_idp_dh
+ + CONTEXTDIR=/data/tomcat_idp_dh/webapps/dynascan
+ + ANTPATH=/data/tomcat_idp_dh/webapps/dynascan/WEB-INF/dbsetup
+ + BUILD_NO=1220
+ + REL=5.8.0
+ + JAVA_HOME=/data/java
+ + WAR_FILE_TYPE=IdPRI
+ + BACKUP_PATH=/data/tomcat_idp_dh/logs
+ + WAR_FILE=IdPRI-1220-5.8.0.war
+ + ANT=/data/ant/bin/ant
+ + SCRIPT_HOME=/data/workspace
+ + Property_File=/data/workspace/build.scripts/nightlybuild_scripts/deploy_az/tomcat_dynascan/idp-dynascan_dh-input.properties
+ + JAR=/data/java/bin/jar
+ + CSA_CONFIG_FILE=CSA.properties
+ + PROP_PATH=/data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/config/props
+ + SOURCE_IP=147.249.226.11
+ + DEST_IP=10.247.97.13
+ + SOURCE_MAIL_ADD=csa.techsupport@sungard.com
+ + DEST_MAIL_ADD=no-reply@sungard.com
+ + JMX_PORT=1111
+ + NEW_JMX_PORT=1106
+ /data/tomcat_idp_dh/webapps/dynascan exists
+ + '[' -d /data/tomcat_idp_dh/webapps/dynascan ']'
+ + echo '/data/tomcat_idp_dh/webapps/dynascan exists'
+ + TOMCAT_STOP
+ + sudo /etc/init.d/dynascan_dh stop
+ Stopping Tomcat
+ $CATALINA_PID was set but the specified file does not exist. Is Tomcat running? Stop aborted.
+ + WAR_Clean
+ + cd /data/tomcat_idp_dh
+ + rm -rf logs/applyPatch.log logs/catalina.2024-08-28.log logs/catalina.2024-08-29.log logs/catalina.out logs/host-manager.2024-08-28.log logs/localhost.2024-08-28.log logs/localhost.2024-08-29.log logs/localhost_access_log..2024-08-28.txt logs/localhost_access_log..2024-08-29.txt logs/manager.2024-08-28.log work/Catalina temp/jr-font6797598857148169801.ttf temp/jr-font8545168036717774944.ttf
+ + rm -rf /data/tomcat_idp_dh/webapps/dynascan/apple-touch-icon-114x114-precomposed.png /data/tomcat_idp_dh/webapps/dynascan/apple-touch-icon-57x57-precomposed.png /data/tomcat_idp_dh/webapps/dynascan/apple-touch-icon-72x72-precomposed.png /data/tomcat_idp_dh/webapps/dynascan/apple-touch-icon.png /data/tomcat_idp_dh/webapps/dynascan/apple-touch-icon-precomposed.png /data/tomcat_idp_dh/webapps/dynascan/csa /data/tomcat_idp_dh/webapps/dynascan/favicon.ico /data/tomcat_idp_dh/webapps/dynascan/files /data/tomcat_idp_dh/webapps/dynascan/helpcontent /data/tomcat_idp_dh/webapps/dynascan/importFile /data/tomcat_idp_dh/webapps/dynascan/jsd /data/tomcat_idp_dh/webapps/dynascan/jsp /data/tomcat_idp_dh/webapps/dynascan/META-INF /data/tomcat_idp_dh/webapps/dynascan/report /data/tomcat_idp_dh/webapps/dynascan/resources /data/tomcat_idp_dh/webapps/dynascan/robots.txt /data/tomcat_idp_dh/webapps/dynascan/sso /data/tomcat_idp_dh/webapps/dynascan/static-ui /data/tomcat_idp_dh/webapps/dynascan/temporaryFiles /data/tomcat_idp_dh/webapps/dynascan/tempthemes /data/tomcat_idp_dh/webapps/dynascan/themes /data/tomcat_idp_dh/webapps/dynascan/WEB-INF /data/tomcat_idp_dh/webapps/dynascan/wsdl
+ + WAR_Download
+ + cd /data/tomcat_idp_dh/webapps/dynascan
+ + wget -nv http://10.7.185.172//buildrepository/CSA/nightbuild/trunk/1220/IdPRI-1220-5.8.0.war
+ 2024-08-29 00:43:16 URL:http://10.7.185.172//buildrepository/CSA/nightbuild/trunk/1220/IdPRI-1220-5.8.0.war [263973023/263973023] -> "IdPRI-1220-5.8.0.war" [1]
+ WAR Download successful
+ + '[' 0 -eq 0 ']'
+ + echo 'WAR Download successful'
+ + /data/java/bin/jar -xf IdPRI-1220-5.8.0.war
+ + rm -rf IdPRI-1220-5.8.0.war
+ Copy com Directory
+ + echo 'Copy com Directory'
+ + cp -R /build.scripts/nightlybuild_scripts/deploy_az/com /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/
+ cp: cannot stat ‘/build.scripts/nightlybuild_scripts/deploy_az/com’: No such file or directory
+ + WAR_Prepare
+ + cd /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/dbsetup
+ + /data/ant/bin/ant -f build.xml -propertyfile /data/workspace/build.scripts/nightlybuild_scripts/deploy_az/tomcat_dynascan/idp-dynascan_dh-input.properties
+ + tee -a /data/tomcat_idp_dh/logs/applyPatch.log
+ Buildfile: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/dbsetup/build.xml
+ 
+ newiafdb:
+ 
+ displaypathnote:
+      [echo] *************************************************************************************
+      [echo] ** NOTE: Please use '/'(FORWARD SLASH) as path separator while providing the input **
+      [echo] *************************************************************************************
+ 
+ broadcastprompt:
+     [input] skipping input as property clusterEnvironment has already been set.
+     [input] skipping input as property httpInvokerClusterHosts has already been set.
+     [input] skipping input as property setup.new.db has already been set.
+ 
+ dbtypeprompt:
+     [input] skipping input as property db.type has already been set.
+     [input] skipping input as property db.ssl has already been set.
+ 
+ newdbprompt:
+     [input] skipping input as property db.create.new has already been set.
+     [input] skipping input as property db.create.tables has already been set.
+ 
+ targetprompt:
+     [input] skipping input as property target.version has already been set.
+     [input] skipping input as property merge.generate.target.schema.file has already been set.
+ 
+ getinput:
+ 
+ dbhostprompt:
+     [input] skipping input as property db.host has already been set.
+     [input] skipping input as property db.port has already been set.
+     [input] skipping input as property db.schema.name has already been set.
+     [input] skipping input as property db.schema.password has already been set.
+     [input] skipping input as property db.service.name has already been set.
+     [input] skipping input as property load.static.data has already been set.
+     [input] skipping input as property load.dynamic.data has already been set.
+     [input] skipping input as property guid.generation.type has already been set.
+ 
+ write.csa.build.properties:
+ [propertyfile] Creating new property file: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/csa.build.properties
+    [delete] Deleting: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/dbsetup/temp/pass.properties
+ [propertyfile] Updating property file: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/csa.build.properties
+ [propertyfile] Updating property file: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/csa.build.properties
+ [propertyfile] Creating new property file: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/database.properties
+ [propertyfile] Updating property file: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/database.properties
+ [propertyfile] Updating property file: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/config/props/GUIDConfig.properties
+ [propertyfile] Updating property file: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/ExternalEventProcessor.properties
+ [propertyfile] Updating property file: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/csa.build.properties
+    [delete] Deleting: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/dbsetup/temp/pass.properties
+ [propertyfile] Updating property file: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/csa.build.properties
+ [propertyfile] Updating property file: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/database.properties
+ 
+ persistdbsetupproperties:
+ [propertyfile] Creating new property file: /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/csa.dbsetup.properties
+      [echo] Executing newdb
+ [DatabaseEngine] Executing DatabaseEngine Task : newiafdb
+ [DatabaseEngine] Merging DB Schema in file /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/META-INF/dbsetup/active/db_.xml
+ [DatabaseEngine] Setting up new database for version : active started.
+ [DatabaseEngine] Creating table metadata from file : /META-INF/dbsetup/active/db_.xml
+ [DatabaseEngine] Setting up new database for version : active complete.
+ 
+ cleaniodirectory:
+    [delete] Deleting directory /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/dbsetup/temp
+ 
+ BUILD SUCCESSFUL
+ Total time: 2 seconds
+ + cd /data/tomcat_idp_dh/webapps/dynascan
+ + sed -i 's/remote.isi_services.url=http:\/\/localhost:8080\/ISI/remote.isi_services.url=http:\/\/10.7.185.176:8001\/ISI_QA/g' WEB-INF/classes/config/props/CSA.properties
+ + sed -i 's/remote.geo_service.url=http:\/\/localhost:8090\/geo/remote.geo_service.url=http:\/\/10.7.185.176:8004\/geo/g' WEB-INF/classes/config/props/MSA.properties
+ + sed -i s/captcha.test.code=/captcha.test.code=abcd/g /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/config/props/CSA.dynamic.properties
+ + cp -r '/data/tomcat_idp_dh/temp/test/*' /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes
+ cp: cannot stat ‘/data/tomcat_idp_dh/temp/test/*’: No such file or directory
+ + mkdir -p /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/log
+ + ln -s /data/nfs /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/logs
+ + ln -s /data/nfs/importFile/ /data/tomcat_idp_dh/webapps/dynascan/importFile
+ + ln -s /data/nfs/messagelogger /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/log/messagelogger
+ + GlobalSearch
+ + PROP_PATH=/data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/config/props
+ + GS_File=/data/workspace/build.scripts/nightlybuild_scripts/deploy_az/GlobalSearchConfig.txt
+ + for parameter in collection password user
+ + [[ collection == \c\o\l\l\e\c\t\i\o\n ]]
+ ++ cat /data/workspace/build.scripts/nightlybuild_scripts/deploy_az/GlobalSearchConfig.txt
+ ++ grep dyna
+ ++ awk -F ' ' '{print $NF}'
+ + value=idpmetadyna
+ + sed -i '/^search.provider.collection/ s|=.*|=idpmetadyna|g' /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/config/props/CSA.dynamic.properties
+ + sed -i '/^search.provider.user/ s|=.*|=idpmetadyna|g' /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/config/props/CSA.dynamic.properties
+ + for parameter in collection password user
+ + [[ password == \c\o\l\l\e\c\t\i\o\n ]]
+ + [[ password == \p\a\s\s\w\o\r\d ]]
+ ++ cat /data/workspace/build.scripts/nightlybuild_scripts/deploy_az/GlobalSearchConfig.txt
+ ++ grep -A1 dyna
+ ++ grep -v dyna
+ ++ awk -F d= '{print $NF}'
+ + value='ENC(Xy5fa3v7OTEnKj3iFZfo6U5LbV5Z0EPngjI9vo3TiAQbyOorAH3Qqw==)'
+ + sed -i '/^search.provider.password/ s|=.*|=ENC(Xy5fa3v7OTEnKj3iFZfo6U5LbV5Z0EPngjI9vo3TiAQbyOorAH3Qqw==)|g' /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/config/props/CSA.dynamic.properties
+ + for parameter in collection password user
+ + [[ user == \c\o\l\l\e\c\t\i\o\n ]]
+ + [[ user == \p\a\s\s\w\o\r\d ]]
+ + sed -i '/^search.enabled/ s|=.*|=true|g' /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/config/props/CSA.dynamic.properties
+ + sed -i '/^search.provider.url/ s|localhost|10.7.185.167|g' /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/config/props/CSA.dynamic.properties
+ + TOMCAT_START
+ + sudo /etc/init.d/dynascan_dh start
+ Starting tomcat: 
+ Tomcat started.
+ INFO: Tomcat started
+ Triggering a new build of IdP » NB-Deployments » Deployment_Dynascan_Oracle_IdP_Plain_NB_login1
+ Finished: SUCCESS
