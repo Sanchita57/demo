@@ -18,6 +18,103 @@ https://medium.com/geekculture/integrate-hashicorp-vault-with-cicd-tool-jenkins-
 }
 
 
+The commands I mentioned in the explanation are indeed derived from the Jenkins console output you provided. Here’s a breakdown of where each command is found in the output:
+
+1. Build Triggering
+
+	•	Not an actual command, but the section describing the triggering of the build:
+
+Started by upstream project "..."
+
+
+
+2. Environment Preparation
+
+	•	Environment Variable Injection:
+
+[EnvInject] - Injecting as environment variables the properties content 
+ANT_OPTS="-Djdk.util.jar.enableMultiRelease=force"
+
+
+
+3. Remote Script Execution
+
+	•	Shell Script Execution:
+
+[Deployment_Dynascan_Oracle_IdP_Plain_NB_DH] $ /bin/sh -xe /tmp/jenkins7613768205157773236.sh
++ ssh -o StrictHostKeyChecking=no svc-idpnb@10.7.185.167 '. .bash_profile; sh -x /data/workspace/build.scripts/nightlybuild_scripts/deploy_az/tomcat_dynascan/remoteScript_TmMysql_dh.sh 1220 5.8.0 IdPRI Install; sleep 60'
+
+
+
+4. Stopping Tomcat Server
+
+	•	Stopping Tomcat:
+
++ sudo /etc/init.d/dynascan_dh stop
+
+
+
+5. Cleaning Up Old Files
+
+	•	Removing Files:
+
++ rm -rf logs/applyPatch.log ...
+
+
+
+6. Downloading and Extracting WAR File
+
+	•	Downloading WAR:
+
++ wget -nv http://10.7.185.172//buildrepository/CSA/nightbuild/trunk/1220/IdPRI-1220-5.8.0.war
+
+
+	•	Extracting WAR:
+
++ /data/java/bin/jar -xf IdPRI-1220-5.8.0.war
+
+
+
+7. Running Ant Build Script
+
+	•	Executing Ant Build:
+
++ /data/ant/bin/ant -f build.xml -propertyfile /data/workspace/build.scripts/nightlybuild_scripts/deploy_az/tomcat_dynascan/idp-dynascan_dh-input.properties
+
+
+
+8. Configuring Properties and Starting Tomcat
+
+	•	Modifying Configuration with sed:
+
++ sed -i 's/remote.isi_services.url=http:\/\/localhost:8080\/ISI/remote.isi_services.url=http:\/\/10.7.185.176:8001\/ISI_QA/g' WEB-INF/classes/config/props/CSA.properties
+
+
+	•	Starting Tomcat:
+
++ sudo /etc/init.d/dynascan_dh start
+
+
+
+9. Triggering a Downstream Build
+
+	•	Not a command but an action initiated by Jenkins:
+
+Triggering a new build of IdP » NB-Deployments » Deployment_Dynascan_Oracle_IdP_Plain_NB_login1
+
+
+
+10. Final Status
+
+	•	Not a command but a status message:
+
+Finished: SUCCESS
+
+
+
+So, all the commands or actions I mentioned are directly extracted or derived from the actual Jenkins console output you provided. The specific commands executed on the server (like ssh, sudo, wget, sed, etc.) are indeed part of the console log.
+
+
 
  Started by upstream project "IdP/NB-Deployments/Deployment_Dynascan_Oracle_IdP_Plain_NB_Admin2" build number 976
  originally caused by:
@@ -202,7 +299,7 @@ https://medium.com/geekculture/integrate-hashicorp-vault-with-cicd-tool-jenkins-
  ++ cat /data/workspace/build.scripts/nightlybuild_scripts/deploy_az/GlobalSearchConfig.txt
  ++ grep -A1 dyna
  ++ grep -v dyna
- ++ awk -F d= '{print $NF}'
+ ++ awk -F d= '{print $er NF}'
  + value='ENC(Xy5fa3v7OTEnKj3iFZfo6U5LbV5Z0EPngjI9vo3TiAQbyOorAH3Qqw==)'
  + sed -i '/^search.provider.password/ s|=.*|=ENC(Xy5fa3v7OTEnKj3iFZfo6U5LbV5Z0EPngjI9vo3TiAQbyOorAH3Qqw==)|g' /data/tomcat_idp_dh/webapps/dynascan/WEB-INF/classes/config/props/CSA.dynamic.properties
  + for parameter in collection password user
