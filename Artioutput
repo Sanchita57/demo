@@ -38,8 +38,7 @@ TAG=$2
 CONF=${3:-$CONF}  # Optional argument, uses existing CONF if not provided
 UNZIP_OPTS=${4:-$UNZIP_OPTS}  # Optional argument, uses existing UNZIP_OPTS if not provided
 DIR=${5:-..}  # Optional argument, defaults to '..' if not provided
-USERNAME=$6
-PASSWORD=$7
+TOKEN=$6  # API Token
 
 # Handle case for ALL products
 if [ "$PROD" = "ALL" ]
@@ -47,7 +46,7 @@ then
     LOYALTY_PRODUCTS=${LOYALTY_PRODUCTS:-"CBRS BP LEM LUMC RN SC"}
     for prod in $LOYALTY_PRODUCTS
     do
-      download.sh "$prod" "$TAG" "$CONF" "$UNZIP_OPTS" "$DIR" "$USERNAME" "$PASSWORD"
+      download.sh "$prod" "$TAG" "$CONF" "$UNZIP_OPTS" "$DIR" "$TOKEN"
     done
     exit 1
 fi
@@ -58,9 +57,9 @@ mkdir -p /tmp/$PROD
 (
     cd /tmp/$PROD || exit
 
-    # Download using username and password variables
-    echo curl -u ${CREDS/:*/:***************} -x $proxy https://artifactory.fis.dev/artifactory/lty-generic-dev/$PROD/$PROD-$TAG.zip -L -O
-    curl -v -u "$USERNAME:$PASSWORD" --retry 20 --retry-delay 60 -x proxy.prod.local:8080 https://artifactory.fis.dev/artifactory/lty-generic-dev/$PROD/$PROD-$TAG.zip -L -O --connect-timeout 300 --max-time 7200
+    # Download using API token for authentication
+    echo curl -H "Authorization: Bearer ***************" -x $proxy https://artifactory.fis.dev/artifactory/lty-generic-dev/$PROD/$PROD-$TAG.zip -L -O
+    curl -v -H "Authorization: Bearer $TOKEN" --retry 20 --retry-delay 60 -x proxy.prod.local:8080 https://artifactory.fis.dev/artifactory/lty-generic-dev/$PROD/$PROD-$TAG.zip -L -O --connect-timeout 300 --max-time 7200
 )
 
 echo "$DIRNAME $PROGNAME $PROD $TAG"
